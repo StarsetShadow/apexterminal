@@ -22,6 +22,39 @@
 
     * { box-sizing: border-box; }
 
+    /* Custom scrollbars — site aesthetic */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #5a2226 #0b0a0a;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0b0a0a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #5a2226;
+      border: 2px solid #0b0a0a;
+      border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8e303a;
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+      background: var(--red-bright);
+    }
+
+    ::-webkit-scrollbar-corner {
+      background: #0b0a0a;
+    }
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -263,7 +296,7 @@
     .hero-copy {
       z-index: 1;
       width: min(760px, 100%);
-      padding: 48px 64px 32px;
+      padding: 48px 64px 0;
     }
 
     .hero-copy[hidden],
@@ -617,6 +650,109 @@
       transform: translateY(-2px);
     }
 
+    .archive-folder.locked,
+    .archive-list-item.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: #2a2a2a;
+      background: linear-gradient(145deg, rgba(18, 18, 18, .93), rgba(10, 10, 10, .96));
+    }
+
+    .archive-folder.locked:hover,
+    .archive-folder.locked:focus-visible,
+    .archive-list-item.locked:hover,
+    .archive-list-item.locked:focus-visible {
+      border-color: #2a2a2a;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .archive-folder.locked strong,
+    .archive-list-item.locked strong {
+      color: #6a6a6a;
+      filter: blur(5px);
+      will-change: filter;
+    }
+
+    .archive-folder.locked span:not(.lock-symbol),
+    .archive-list-item.locked span:not(.lock-symbol) {
+      color: #5a5a5a;
+      filter: blur(5px);
+      will-change: filter;
+    }
+
+    .archive-folder.locked .lock-symbol,
+    .archive-list-item.locked .lock-symbol {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--red-bright);
+      animation: lock-glitch .08s steps(1, end) infinite;
+      pointer-events: none;
+      z-index: 2;
+      will-change: transform;
+    }
+
+    .archive-folder.locked .lock-symbol .lock-icon,
+    .archive-list-item.locked .lock-symbol .lock-icon {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Card-wide "Final"-style glitch — sits under the grey opacity overlay */
+    .archive-list-item.locked::before,
+    .archive-list-item.locked::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    .archive-list-item.locked::before {
+      border: 1px solid var(--red-bright);
+      animation: locked-card-glitch-a .12s steps(1, end) infinite;
+    }
+
+    .archive-list-item.locked::after {
+      border: 1px solid #7b1ea6;
+      animation: locked-card-glitch-b .13s steps(1, end) infinite;
+    }
+
+    @keyframes locked-card-glitch-a {
+      0%, 100% { transform: none; opacity: 0; }
+      92% { transform: translate(-3px, -1px); opacity: .95; }
+      94% { transform: translateX(4px); opacity: .45; }
+      97% { transform: translate(-1px, 1px); opacity: .8; }
+    }
+
+    @keyframes locked-card-glitch-b {
+      0%, 100% { transform: none; opacity: 0; }
+      92% { transform: translate(3px, 1px); opacity: .95; }
+      95% { transform: translateX(-4px); opacity: .55; }
+    }
+
+    @keyframes lock-glitch {
+      0%, 90% { transform: translateY(-50%) translateX(0) skewX(0); }
+      92% { transform: translateY(-50%) translateX(-4px) skewX(-12deg); }
+      94% { transform: translateY(-50%) translateX(5px) skewX(8deg); }
+      96% { transform: translateY(-50%) translateX(-3px) skewX(-6deg); }
+      98% { transform: translateY(-50%) translateX(4px) skewX(4deg); }
+      100% { transform: translateY(-50%) translateX(0) skewX(0); }
+    }
+
+    @keyframes lock-glitch-slice {
+      0%, 85% { clip-path: inset(10% 0 70%); transform: translateX(-6px); }
+      88% { clip-path: inset(5% 0 80%); transform: translateX(-10px); }
+      92% { clip-path: inset(25% 0 55%); transform: translateX(-2px); }
+      95% { clip-path: inset(0% 0 95%); transform: translateX(-8px); }
+      100% { clip-path: inset(10% 0 70%); transform: translateX(-6px); }
+    }
+
     .archive-folder-icon {
       width: 22px;
       height: 15px;
@@ -721,12 +857,14 @@
 
     .archive-list-item {
       min-width: 0;
+      position: relative;
       padding: 12px 11px;
       border: 1px solid #302222;
       background: linear-gradient(145deg, rgba(22, 18, 18, .93), rgba(13, 13, 13, .96));
       cursor: pointer;
       text-align: left;
       transition: border-color .18s, background .18s, box-shadow .18s, transform .18s;
+      overflow: hidden;
     }
 
     .archive-list-item:hover,
@@ -737,6 +875,15 @@
     }
 
     .archive-list-item strong {
+      display: block;
+      margin-bottom: 6px;
+      overflow-wrap: anywhere;
+      color: #e8e2df;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
       display: block;
       margin-bottom: 6px;
       overflow-wrap: anywhere;
@@ -844,6 +991,11 @@
       pointer-events: none;
     }
 
+    .archive-list-window:has(~ .album-window:not([hidden])) {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
     .archive-window:has(~ .archive-list-window:not([hidden])) {
       opacity: 0.4;
       pointer-events: none;
@@ -892,6 +1044,318 @@
       line-height: 1.9;
       letter-spacing: .03em;
       text-transform: none;
+    }
+
+    /* Atmospheric background for poem windows (no glitch) */
+    .poem-window {
+      overflow: hidden;
+    }
+
+    .poem-window::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .07;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
+      background-size: 26px 26px;
+      animation: poem-bg-drift 18s linear infinite;
+    }
+
+    .poem-window::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 70% 30%, rgba(227, 38, 54, .14), transparent 60%);
+      animation: poem-bg-breathe 9s ease-in-out infinite;
+    }
+
+    .poem-window-scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 90px;
+      z-index: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255, 51, 71, .08) 45%,
+        rgba(255, 51, 71, .16) 50%,
+        rgba(255, 51, 71, .08) 55%,
+        transparent
+      );
+      animation: poem-scan-sweep 9s linear infinite;
+    }
+
+    .poem-window-header,
+    .poem-window-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes poem-bg-drift {
+      to { background-position: 26px 26px, -26px -26px; }
+    }
+
+    @keyframes poem-bg-breathe {
+      0%, 100% { opacity: .5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.06); }
+    }
+
+    @keyframes poem-scan-sweep {
+      0% { top: -90px; opacity: 0; }
+      12% { opacity: .7; }
+      88% { opacity: .7; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    .album-window {
+      position: fixed;
+      z-index: 12;
+      inset: 0;
+      width: min(520px, calc(100% - 24px));
+      max-width: none;
+      height: max-content;
+      margin: auto;
+      padding: 0;
+      border: 1px solid rgba(227, 38, 54, .55);
+      background: #0b0a0a;
+      color: var(--paper);
+      box-shadow: 0 0 40px rgba(227, 38, 54, .2), inset 0 0 24px rgba(227, 38, 54, .035);
+    }
+
+    .album-window[hidden] { display: none; }
+
+    .album-window.is-opening { animation: poem-window-open .28s cubic-bezier(.2, .8, .2, 1) both; }
+    .album-window.is-closing { animation: poem-window-close .22s ease-in both; }
+
+    .album-window-header {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(227, 38, 54, .3);
+      background: rgba(227, 38, 54, .055);
+      color: #d7cecb;
+      font-size: 9px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      flex: 0 0 auto;
+    }
+
+    .album-window-close {
+      border: 0;
+      background: transparent;
+      color: var(--red-bright);
+      cursor: pointer;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .album-window-content {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 128px 1fr;
+      grid-template-areas:
+        "cover info"
+        "cover play"
+        "list  list";
+      align-items: center;
+      gap: 10px 18px;
+    }
+
+    .album-cover {
+      grid-area: cover;
+      justify-self: center;
+      width: 128px;
+      aspect-ratio: 1;
+      border: 1px solid #302222;
+      background: linear-gradient(145deg, rgba(80, 60, 100, .18), rgba(120, 100, 60, .14));
+      box-shadow: 0 0 24px rgba(227, 38, 54, .15);
+      overflow: hidden;
+    }
+
+    #album-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .album-play-all {
+      grid-area: play;
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 0 30px;
+      border: 1px solid var(--red);
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 0 24px rgba(227, 38, 54, .25);
+      transition: background .2s, box-shadow .2s, border-color .2s;
+    }
+
+    .album-play-all:hover {
+      border-color: var(--red-bright);
+      background: #c61d2c;
+      box-shadow: 0 0 32px rgba(227, 38, 54, .35);
+    }
+
+    .album-play-all:focus-visible {
+      outline: 1px solid var(--red-bright);
+      outline-offset: 3px;
+    }
+
+    .album-play-all[hidden] { display: none; }
+
+    .album-play-all-icon { font-size: 14px; line-height: 1; }
+
+    .album-info {
+      grid-area: info;
+      justify-self: start;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    #album-title {
+      margin: 0;
+      color: #e8e2df;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .album-meta {
+      margin: 0;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .album-tracklist {
+      grid-area: list;
+      width: 100%;
+      max-height: 260px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #302222;
+    }
+
+    .album-track {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: border-color .18s, background .18s;
+    }
+
+    .album-track:hover {
+      border-color: #302222;
+      background: rgba(227, 38, 54, .05);
+    }
+
+    .album-track-num {
+      flex: 0 0 auto;
+      width: 20px;
+      color: #665d5c;
+      font-size: 8px;
+      letter-spacing: .05em;
+      text-align: right;
+    }
+
+    .album-track-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .album-track-title {
+      color: #d9d0cd;
+      font-size: 9px;
+      letter-spacing: .03em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .album-track-artist {
+      color: var(--muted);
+      font-size: 7.5px;
+      letter-spacing: .03em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .album-track-dur {
+      flex: 0 0 auto;
+      color: #8b7d7d;
+      font-size: 8px;
+      letter-spacing: .03em;
+    }
+
+    .album-play-btn {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border: 1px solid #302222;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 10px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: border-color .18s, color .18s, background .18s, box-shadow .18s;
+    }
+
+    .album-play-btn:hover:not(:disabled) {
+      border-color: var(--red-bright);
+      color: var(--red-bright);
+      background: rgba(227, 38, 54, .1);
+    }
+
+    .album-play-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .album-play-btn:focus-visible {
+      outline: 1px solid var(--red-bright);
+      outline-offset: 2px;
     }
 
     .hero h1 {
@@ -1050,6 +1514,114 @@
       transform: translateX(4px);
     }
 
+    .glitch-final {
+      position: relative;
+      display: inline-block;
+      animation: text-glitch-intense .05s steps(1, end) infinite;
+      text-shadow:
+        4px 0 rgba(255, 51, 71, 1),
+        -4px 0 rgba(123, 30, 166, 1),
+        8px 0 rgba(255, 51, 71, .6),
+        -8px 0 rgba(123, 30, 166, .6);
+    }
+
+    .glitch-final::before,
+    .glitch-final::after {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      content: attr(data-text);
+      pointer-events: none;
+    }
+
+    .glitch-final::before {
+      color: var(--red-bright);
+      clip-path: inset(10% 0 70%);
+      transform: translateX(-8px);
+      animation: glitch-slice-1 .03s steps(1, end) infinite;
+    }
+
+    .glitch-final::after {
+      color: #f1eae7;
+      clip-path: inset(65% 0 10%);
+      transform: translateX(8px);
+      animation: glitch-slice-2 .04s steps(1, end) infinite;
+    }
+
+    .glitch-final-title {
+      position: relative;
+      display: inline-block;
+      animation: text-glitch-intense .05s steps(1, end) infinite;
+      animation-delay: 0s;
+      text-shadow:
+        4px 0 rgba(255, 51, 71, 1),
+        -4px 0 rgba(123, 30, 166, 1),
+        8px 0 rgba(255, 51, 71, .6),
+        -8px 0 rgba(123, 30, 166, .6);
+    }
+
+    .glitch-final-title::before,
+    .glitch-final-title::after {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      content: attr(data-text);
+      pointer-events: none;
+    }
+
+    .glitch-final-title::before {
+      color: var(--red-bright);
+      clip-path: inset(10% 0 70%);
+      transform: translateX(-8px);
+      animation: glitch-slice-1 .03s steps(1, end) infinite;
+      animation-delay: -0.01s;
+    }
+
+    .glitch-final-title::after {
+      color: #f1eae7;
+      clip-path: inset(65% 0 10%);
+      transform: translateX(8px);
+      animation: glitch-slice-2 .04s steps(1, end) infinite;
+      animation-delay: -0.015s;
+    }
+
+    .glitch-final-album {
+      position: relative;
+      display: inline-block;
+      animation: text-glitch-intense .05s steps(1, end) infinite;
+      animation-delay: 0.02s;
+      text-shadow:
+        4px 0 rgba(255, 51, 71, 1),
+        -4px 0 rgba(123, 30, 166, 1),
+        8px 0 rgba(255, 51, 71, .6),
+        -8px 0 rgba(123, 30, 166, .6);
+    }
+
+    .glitch-final-album::before,
+    .glitch-final-album::after {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      content: attr(data-text);
+      pointer-events: none;
+    }
+
+    .glitch-final-album::before {
+      color: var(--red-bright);
+      clip-path: inset(10% 0 70%);
+      transform: translateX(-8px);
+      animation: glitch-slice-1 .03s steps(1, end) infinite;
+      animation-delay: 0.025s;
+    }
+
+    .glitch-final-album::after {
+      color: #f1eae7;
+      clip-path: inset(65% 0 10%);
+      transform: translateX(8px);
+      animation: glitch-slice-2 .04s steps(1, end) infinite;
+      animation-delay: 0.03s;
+    }
+
     .loading-cursor {
       color: var(--red-bright);
       animation: pulse 1s steps(2, start) infinite;
@@ -1095,6 +1667,20 @@
       font-size: 11px;
       line-height: 1.9;
     }
+
+    .hero-description-line {
+      display: block;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+
+    body.access-granted .hero-description-line {
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero-description-line:nth-child(2) { transition-delay: .13s; }
 
     .hero-description.is-glitching {
       position: relative;
@@ -1317,6 +1903,36 @@
       91% { transform: translateX(-2px); }
     }
 
+    @keyframes text-glitch-intense {
+      0%, 92% { transform: none; }
+      93% { transform: translateX(-6px) skewX(-15deg); }
+      94% { transform: translateX(8px) skewX(10deg); }
+      95% { transform: translateX(-4px) skewX(-8deg); }
+      96% { transform: translateX(10px) skewX(5deg); }
+      97% { transform: translateX(-8px) skewX(-12deg); }
+      98% { transform: translateX(6px) skewX(8deg); }
+      99% { transform: translateX(-10px) skewX(-5deg); }
+      100% { transform: none; }
+    }
+
+    @keyframes glitch-slice-1 {
+      0%, 90% { clip-path: inset(10% 0 70%); transform: translateX(-8px); }
+      91% { clip-path: inset(5% 0 80%); transform: translateX(-15px); }
+      92% { clip-path: inset(20% 0 60%); transform: translateX(-4px); }
+      93% { clip-path: inset(0% 0 90%); transform: translateX(-12px); }
+      94% { clip-path: inset(30% 0 50%); transform: translateX(-6px); }
+      95% { clip-path: inset(10% 0 70%); transform: translateX(-8px); }
+    }
+
+    @keyframes glitch-slice-2 {
+      0%, 90% { clip-path: inset(65% 0 10%); transform: translateX(8px); }
+      91% { clip-path: inset(50% 0 20%); transform: translateX(15px); }
+      92% { clip-path: inset(80% 0 5%); transform: translateX(4px); }
+      93% { clip-path: inset(40% 0 30%); transform: translateX(12px); }
+      94% { clip-path: inset(70% 0 15%); transform: translateX(6px); }
+      95% { clip-path: inset(65% 0 10%); transform: translateX(8px); }
+    }
+
     @keyframes access-level-glitch {
       0%, 72%, 80%, 100% { opacity: 1; transform: none; }
       74% { opacity: .35; transform: translateX(1px); }
@@ -1356,33 +1972,33 @@
     }
 
     @keyframes archive-window-open {
-      from { opacity: 0; clip-path: inset(45% 0); transform: scale(.94); filter: brightness(1.8); }
-      to { opacity: 1; clip-path: inset(0); transform: scale(1); filter: brightness(1); }
+      from { opacity: 0; transform: scale(.94); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     @keyframes archive-window-close {
-      from { opacity: 1; clip-path: inset(0); transform: scale(1); filter: brightness(1); }
-      to { opacity: 0; clip-path: inset(45% 0); transform: scale(.94); filter: brightness(1.8); }
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(.94); }
     }
 
     @keyframes archive-list-open {
-      from { opacity: 0; clip-path: inset(42% 0); transform: scaleY(.08); filter: brightness(2); }
-      to { opacity: 1; clip-path: inset(0); transform: scaleY(1); filter: brightness(1); }
+      from { opacity: 0; transform: scaleY(.08); }
+      to { opacity: 1; transform: scaleY(1); }
     }
 
     @keyframes archive-list-close {
-      from { opacity: 1; clip-path: inset(0); transform: scaleY(1); filter: brightness(1); }
-      to { opacity: 0; clip-path: inset(42% 0); transform: scaleY(.08); filter: brightness(2); }
+      from { opacity: 1; transform: scaleY(1); }
+      to { opacity: 0; transform: scaleY(.08); }
     }
 
     @keyframes poem-window-open {
-      from { opacity: 0; clip-path: inset(45% 0); transform: scale(.94); filter: brightness(1.8); }
-      to { opacity: 1; clip-path: inset(0); transform: scale(1); filter: brightness(1); }
+      from { opacity: 0; transform: scale(.94); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     @keyframes poem-window-close {
-      from { opacity: 1; clip-path: inset(0); transform: scale(1); filter: brightness(1); }
-      to { opacity: 0; clip-path: inset(45% 0); transform: scale(.94); filter: brightness(1.8); }
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(.94); }
     }
 
     @keyframes brand-mark-glitch {
@@ -1555,7 +2171,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; animation-delay: 0s !important; }
       .hero-art { animation: none !important; }
       .hero::before, .hero-scanline { animation: none !important; }
       .hero-scanline { opacity: .35; transform: rotate(-24deg); }
@@ -1591,9 +2207,9 @@
         <div class="hero-copy">
           <p class="eyebrow"><span class="operator-glitch" id="greeting-phrase" data-text="Welcome back,">Welcome back,</span> <span class="operator-glitch" id="operator-name" data-text="Shadow">Shadow</span></p>
           <h1 id="hero-title" aria-label="Verifying access"><span class="access-loading" role="status"><span class="loading-prompt" aria-hidden="true">&gt; </span><span class="access-label" data-text="VERIFYING ACCESS"></span><span class="loading-dots" aria-hidden="true"><span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></span><span class="loading-cursor" aria-hidden="true">_</span></span><span class="terminal-content"><span class="terminal-prompt" aria-hidden="true">&gt; </span><span class="terminal-message" aria-hidden="true"></span><span class="terminal-cursor" aria-hidden="true">_</span></span></h1>
-          <p class="hero-description" id="hero-description" aria-hidden="true"></p>
+          <p class="hero-description" id="hero-description" aria-hidden="true"><span class="hero-description-line"><span class="terminal-prompt">&gt;</span> Access level 01, read only</span><span class="hero-description-line"><span class="terminal-prompt">&gt;</span> Directories: three remain locked</span></p>
           <div class="hero-actions">
-            <button class="button" id="signal-toggle" type="button"><span aria-hidden="true">◉</span> Initialize signal</button>
+            <button class="button" id="signal-toggle" type="button"><span aria-hidden="true">◉</span> Initialize Terminal</button>
           </div>
         </div>
         <section class="profile-terminal" id="profile-terminal" aria-label="Operator profile terminal" hidden>
@@ -1723,12 +2339,34 @@
       </section>
 
       <section class="poem-window" id="poem-window" role="dialog" aria-labelledby="poem-window-title" hidden>
+        <span class="poem-window-scan" aria-hidden="true"></span>
         <div class="poem-window-header">
           <span id="poem-window-title">Avenoir</span>
           <button class="poem-window-close" id="poem-window-close" type="button" aria-label="Close poem window">×</button>
         </div>
         <div class="poem-window-content" id="poem-window-content">
           <pre class="poem-text">Poem to be provided later...</pre>
+        </div>
+      </section>
+
+      <section class="album-window" id="album-window" role="dialog" aria-labelledby="album-window-title" hidden>
+        <div class="album-window-header">
+          <span id="album-window-title">Project Melody Phase: <span class="glitch-final-title" data-text="Final">Final</span></span>
+          <button class="album-window-close" id="album-window-close" type="button" aria-label="Close album window">×</button>
+        </div>
+        <div class="album-window-content">
+          <div class="album-cover" id="album-cover"></div>
+          <div class="album-info">
+            <h2 id="album-title">Project Melody Phase: <span class="glitch-final-album" data-text="Final">Final</span></h2>
+            <p class="album-meta">Fragments Collection</p>
+          </div>
+          <a class="album-play-all" id="album-play-all" href="about:blank" target="_blank" rel="noopener noreferrer" hidden>
+            <span class="album-play-all-icon" aria-hidden="true">▶</span>
+            <span class="album-play-all-text">Play playlist</span>
+          </a>
+          <div class="album-tracklist" id="album-tracklist">
+            <!-- Populated by JS -->
+          </div>
         </div>
       </section>
 
@@ -1788,6 +2426,60 @@
     const poemWindowContent = document.getElementById("poem-window-content");
     let poemCloseFallback;
     let poemTransitionId = 0;
+
+    const albumWindow = document.getElementById("album-window");
+    const albumWindowClose = document.getElementById("album-window-close");
+    const albumWindowTitle = document.getElementById("album-window-title");
+    const albumTracklist = document.getElementById("album-tracklist");
+    const albumPlayAll = document.getElementById("album-play-all");
+    let albumCloseFallback;
+    let albumTransitionId = 0;
+
+    const projectMelodyTracks = [
+      { title: "Signal Acquisition" },
+      { title: "Broken Pieces" },
+      { title: "Coalescence" },
+      { title: "New Fragments" },
+      { title: "Final Transmission" }
+    ];
+
+    const perspectiveTracks = [
+      { n: 1, title: "heavy metal (feat. Rahzel)", artist: "Bring Me The Horizon, Rahzel", dur: "04:00" },
+      { n: 2, title: "p a r a d 0 x 1 c", artist: "STARSET", dur: "05:10" },
+      { n: 3, title: "a n n 1 h 1 l a t 1 0 n", artist: "STARSET", dur: "04:10" },
+      { n: 4, title: "Time of My Life", artist: "Sub Urban", dur: "01:51" },
+      { n: 5, title: "ouch", artist: "Bring Me The Horizon", dur: "01:49" },
+      { n: 6, title: "Smoke & Mirrors", artist: "Sub Urban", dur: "02:10" },
+      { n: 7, title: "Message in a Bottle", artist: "Livingston", dur: "02:54" },
+      { n: 8, title: "Sleep", artist: "Downplay", dur: "03:12" },
+      { n: 9, title: "WAKING UP", artist: "STARSET", dur: "03:29" },
+      { n: 10, title: "Tomorrow", artist: "Downplay", dur: "03:11" },
+      { n: 11, title: "Oh No", artist: "Bring Me The Horizon", dur: "05:00" },
+      { n: 12, title: "Doomed", artist: "Bring Me The Horizon", dur: "04:34" },
+      { n: 13, title: "Sleepwalking", artist: "Bring Me The Horizon", dur: "03:50" },
+      { n: 14, title: "It Never Ends", artist: "Bring Me The Horizon", dur: "04:34" },
+      { n: 15, title: "1x1 (feat. Nova Twins)", artist: "Bring Me The Horizon, Nova Twins", dur: "03:29" },
+      { n: 16, title: "What You Need", artist: "Bring Me The Horizon", dur: "04:12" },
+      { n: 17, title: "CODE MISTAKE", artist: "ECORPSE, Bring Me The Horizon", dur: "02:45" },
+      { n: 18, title: "n/A", artist: "Bring Me The Horizon", dur: "03:20" },
+      { n: 19, title: "Gravedigger", artist: "Livingston", dur: "02:44" },
+      { n: 20, title: "Hurricane - Reimagined", artist: "I Prevail", dur: "03:15" },
+      { n: 21, title: "PHASES", artist: "SCATTERBRAIN", dur: "03:46" }
+    ];
+
+    const albums = {
+      "Perspective": {
+        title: "Perspective",
+        meta: "melodies that divulge a fable from my perspective // By Shadow",
+        coverImage: "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84dda3686c1a23a681336b09bd",
+        playlistUrl: "https://open.spotify.com/playlist/5rwJ5eVQB39PqK9Ir8VTb4?si=727793541cd843c8",
+        tracklist: perspectiveTracks
+      },
+      "Project Melody Phase: Final": {
+        title: "Project Melody Phase: Final",
+        meta: "Fragments Collection"
+      }
+    };
 
     const avenoirPoem = `I walk under the dim moonlight
 Just so i can feel at home
@@ -1870,7 +2562,7 @@ The ghosts are harmless, it's me they fright.
 
 My dear, October,
 Don't give me your hand filled with sweets,
-I have taken abundance of saccharine.
+It will numb me and prevent my altering,
 I'd rather you sing these demons to sleep,
 Cleanse the manor of what I've been fostering.
 
@@ -1879,18 +2571,44 @@ My tombstone has already been situated,
 With inevitability of time you would've learnt,
 This manor of terrors is what i created.`;
 
+    const bloodPoem = `How long until you all realize?
+Hell is disguised as paradise
+I saw myself through a broken mirror;
+The blood made my reflection clearer.
+
+I watered down all the blood each time,
+Did it all as i walked on a thin line.
+I don't desire something comforting,
+Nor do my wounds require nursing.
+
+They will tell me, You're just destructive:
+We don't believe you, You're just deceptive,
+We saw it all through our perspective.
+
+Then you ponder why there's blood,
+I am past your gates of flood.
+I won't entreat your trust,
+Or anything close to such.
+
+I would relish some peace of mind,
+Or some way for a recovery,
+However my rain is not so kind,
+I'll stay in my cemetery,
+I know there's no remedy.`;
+
     poemWindowContent.innerHTML = `<pre class="poem-text">${avenoirPoem}</pre>`;
 
     const archiveContent = {
       "Literature": [
-        { title: "Avenoir", description: "By Shadow", type: "poem" },
-        { title: "Love Song", description: "By Shadow", type: "poem" },
-        { title: "Solivagant", description: "By Shadow", type: "poem" },
-        { title: "October", description: "By Shadow", type: "poem" }
+        { title: "Avenoir", description: "Moonlight, and the red i don't name. // By Shadow", type: "poem" },
+        { title: "Love Song", description: "The words were wrong; the armour was not. // By Shadow", type: "poem" },
+        { title: "Solivagant", description: "Alone, and fluent in the rain. // By Shadow", type: "poem" },
+        { title: "October", description: "Birth of something, now death of everything. // By Shadow", type: "poem" },
+        { title: "Blood", description: "For the clarity that only blood could give. // By Shadow", type: "poem" }
       ],
       "Fragments": [
-        { title: "Void", description: "The space between moments" },
-        { title: "Whisper", description: "Words unspoken" },
+        { title: "Project Melody Phase: Final", description: "Broken pieces coalesced with new pieces" },
+        { title: "Perspective", description: "Melodies that divulge a fable from my perspective // By Shadow" },
         { title: "Remnant", description: "A piece of something whole" },
         { title: "Decay", description: "Entropy in progress" }
       ]
@@ -1998,7 +2716,7 @@ This manor of terrors is what i created.`;
       archiveListTitle.textContent = folderName;
       const items = archiveContent[folderName] || [];
       archiveListItems.innerHTML = items.map(item => {
-        const literatureCards = ["Avenoir", "Love Song", "Solivagant", "October"];
+        const literatureCards = ["Avenoir", "Love Song", "Solivagant", "October", "Blood"];
         if (literatureCards.includes(item.title)) {
           const theme = item.title.toLowerCase();
           return `
@@ -2007,6 +2725,36 @@ This manor of terrors is what i created.`;
                 <strong>${item.title}</strong>
                 <span class="literature-description">${item.description}</span>
               </div>
+            </div>
+          `;
+        }
+        if (item.title.includes("Project Melody Phase")) {
+          return `
+            <div class="archive-list-item locked" data-title="${item.title}" style="pointer-events: none;">
+              <strong>Project Melody Phase: Final</strong>
+              <span>${item.description}</span>
+              <span class="lock-symbol glitch-lock" aria-label="Locked">
+                <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+                  <rect x="5" y="11" width="14" height="10" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                  <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none" />
+                </svg>
+              </span>
+            </div>
+          `;
+        }
+        if (item.title === "Remnant" || item.title === "Decay") {
+          return `
+            <div class="archive-list-item locked" data-title="${item.title}" style="pointer-events: none;">
+              <strong>${item.title}</strong>
+              <span>${item.description}</span>
+              <span class="lock-symbol glitch-lock" aria-label="Locked">
+                <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+                  <rect x="5" y="11" width="14" height="10" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                  <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none" />
+                </svg>
+              </span>
             </div>
           `;
         }
@@ -2054,17 +2802,25 @@ This manor of terrors is what i created.`;
     archiveListItems.addEventListener("click", event => {
       const item = event.target.closest(".archive-list-item");
       if (!item) return;
+      if (item.classList.contains("locked")) return;
       const type = item.dataset.type;
       const title = item.dataset.title;
       if (type === "poem") {
         event.preventDefault();
         openPoemWindow(title);
+      } else if (title === "Perspective") {
+        event.preventDefault();
+        openAlbumWindow("Perspective");
+      } else if (title === "Project Melody Phase: Final") {
+        event.preventDefault();
+        openAlbumWindow("Project Melody Phase: Final");
       }
     });
 
     archiveListItems.addEventListener("keydown", event => {
       const item = event.target.closest(".archive-list-item");
       if (!item) return;
+      if (item.classList.contains("locked")) return;
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         item.click();
@@ -2073,7 +2829,10 @@ This manor of terrors is what i created.`;
 
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") {
-        if (!poemWindow.hidden) {
+        if (!albumWindow.hidden) {
+          event.preventDefault();
+          closeAlbumWindow(true);
+        } else if (!poemWindow.hidden) {
           event.preventDefault();
           closePoemWindow(true);
         } else if (!archiveListWindow.hidden) {
@@ -2081,6 +2840,26 @@ This manor of terrors is what i created.`;
         } else if (!archiveWindow.hidden) {
           closeArchiveWindow(true);
         }
+      }
+    });
+
+    document.addEventListener("pointerdown", event => {
+      if (event.button !== 0) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+
+      const openLayers = [
+        { el: albumWindow, close: () => closeAlbumWindow(true) },
+        { el: poemWindow, close: () => closePoemWindow(true) },
+        { el: archiveListWindow, close: () => closeArchiveListWindow(true) },
+        { el: archiveWindow, close: () => closeArchiveWindow(true) }
+      ];
+
+      for (const layer of openLayers) {
+        if (layer.el.hidden) continue;
+        if (layer.el.contains(target)) return;
+        layer.close();
+        return;
       }
     });
 
@@ -2098,7 +2877,8 @@ This manor of terrors is what i created.`;
         "Avenoir": avenoirPoem,
         "Love Song": loveSongPoem,
         "Solivagant": solivagantPoem,
-        "October": octoberPoem
+        "October": octoberPoem,
+        "Blood": bloodPoem
       };
       poemWindowContent.innerHTML = `<pre class="poem-text">${poems[title] || poems["Avenoir"]}</pre>`;
 
@@ -2133,6 +2913,93 @@ This manor of terrors is what i created.`;
     });
 
     poemWindowClose.addEventListener("click", () => closePoemWindow(true));
+
+    function renderAlbumTracklist() {
+      albumTracklist.innerHTML = projectMelodyTracks.map((track, i) => `
+        <div class="album-track" data-index="${i}">
+          <span class="album-track-title">${track.title}</span>
+          <button class="album-play-btn" type="button" aria-label="Play ${track.title}" disabled>▶</button>
+        </div>
+      `).join("");
+    }
+
+    function renderPerspectiveTracklist() {
+      albumTracklist.innerHTML = perspectiveTracks.map((track) => `
+        <div class="album-track">
+          <span class="album-track-num">${String(track.n).padStart(2, "0")}</span>
+          <span class="album-track-info">
+            <span class="album-track-title">${track.title}</span>
+            <span class="album-track-artist">${track.artist}</span>
+          </span>
+          <span class="album-track-dur">${track.dur}</span>
+        </div>
+      `).join("");
+    }
+
+    function openAlbumWindow(albumKey) {
+      const cfg = albums[albumKey];
+      if (!cfg) return;
+      ++albumTransitionId;
+      window.clearTimeout(albumCloseFallback);
+      albumWindow.hidden = false;
+      albumWindow.inert = false;
+      albumWindow.setAttribute("aria-hidden", "false");
+      albumWindow.classList.remove("is-closing");
+      albumWindow.classList.add("is-opening");
+
+      albumWindowTitle.textContent = cfg.title;
+      document.getElementById("album-title").textContent = cfg.title;
+      document.querySelector(".album-meta").textContent = cfg.meta;
+
+      if (cfg.playlistUrl) {
+        albumPlayAll.href = cfg.playlistUrl;
+        albumPlayAll.hidden = false;
+      } else {
+        albumPlayAll.hidden = true;
+      }
+
+      const albumCover = document.getElementById("album-cover");
+      albumCover.innerHTML = cfg.coverImage
+        ? `<img src="${cfg.coverImage}" alt="${cfg.title} album cover">`
+        : "";
+
+      if (cfg.tracklist) {
+        renderPerspectiveTracklist();
+      } else {
+        renderAlbumTracklist();
+      }
+
+      albumWindowClose.focus();
+    }
+
+    function closeAlbumWindow(returnFocus = false) {
+      if (albumWindow.hidden || albumWindow.classList.contains("is-closing")) return;
+      const transitionId = ++albumTransitionId;
+      albumWindow.classList.remove("is-opening");
+      albumWindow.classList.add("is-closing");
+      albumWindow.inert = true;
+      albumWindow.setAttribute("aria-hidden", "true");
+      if (returnFocus) archiveListBack.focus();
+
+      albumCloseFallback = window.setTimeout(() => finishAlbumWindowClose(transitionId), 300);
+    }
+
+    function finishAlbumWindowClose(transitionId) {
+      if (transitionId !== albumTransitionId || !albumWindow.classList.contains("is-closing")) return;
+      window.clearTimeout(albumCloseFallback);
+      albumWindow.classList.remove("is-closing");
+      albumWindow.hidden = true;
+    }
+
+    albumWindow.addEventListener("animationend", event => {
+      if (event.target === albumWindow && event.animationName === "poem-window-open") {
+        albumWindow.classList.remove("is-opening");
+      } else if (event.target === albumWindow && event.animationName === "poem-window-close") {
+        finishAlbumWindowClose(albumTransitionId);
+      }
+    });
+
+    albumWindowClose.addEventListener("click", () => closeAlbumWindow(true));
 
     function closeProfileTerminal() {
       if (profileTerminal.hidden || profileTerminal.classList.contains("is-closing")) return;
