@@ -299,7 +299,6 @@
       padding: 48px 64px 0;
     }
 
-    .hero-copy[hidden],
     .profile-terminal[hidden] { display: none; }
 
     .profile-terminal {
@@ -987,7 +986,6 @@
     .poem-window.is-closing { animation: poem-window-close .22s ease-in both; }
 
     .archive-list-window:has(~ .poem-window:not([hidden])) {
-      opacity: 0.4;
       pointer-events: none;
     }
 
@@ -1099,6 +1097,12 @@
       z-index: 1;
     }
 
+    /* Tear down ambient layers on close so no ghost text remains */
+    .poem-window.is-closing::before,
+    .poem-window.is-closing::after { content: none; }
+
+    .poem-window.is-closing .poem-window-scan { display: none; }
+
     @keyframes poem-bg-drift {
       to { background-position: 26px 26px, -26px -26px; }
     }
@@ -1109,10 +1113,10 @@
     }
 
     @keyframes poem-scan-sweep {
-      0% { top: -90px; opacity: 0; }
+      from { transform: translateY(-90px); opacity: 0; }
       12% { opacity: .7; }
       88% { opacity: .7; }
-      100% { top: 100%; opacity: 0; }
+      to { transform: translateY(calc(100% + 90px)); opacity: 0; }
     }
 
     .album-window {
@@ -1951,24 +1955,24 @@
     }
 
     @keyframes button-materialize {
-      from { visibility: visible; opacity: 0; clip-path: inset(0 100% 0 0); transform: translateY(5px); }
-      to { visibility: visible; opacity: 1; clip-path: inset(0); transform: translateY(0); }
+      from { visibility: visible; opacity: 0; transform: translateY(5px); }
+      to { visibility: visible; opacity: 1; transform: translateY(0); }
     }
 
     @keyframes card-materialize {
-      from { visibility: visible; opacity: 0; clip-path: inset(0 0 100%); transform: translateY(12px); }
-      to { visibility: visible; opacity: 1; clip-path: inset(0); transform: translateY(0); }
+      from { visibility: visible; opacity: 0; transform: translateY(12px); }
+      to { visibility: visible; opacity: 1; transform: translateY(0); }
     }
 
     @keyframes terminal-open {
-      from { opacity: 0; clip-path: inset(48% 0); transform: scaleY(.04); filter: brightness(2.2); }
-      65% { opacity: 1; clip-path: inset(0); transform: scaleY(1.015); filter: brightness(1.35); }
-      to { opacity: 1; clip-path: inset(0); transform: scaleY(1); filter: brightness(1); }
+      from { opacity: 0; transform: scaleY(.04); }
+      65% { opacity: 1; transform: scaleY(1.015); }
+      to { opacity: 1; transform: scaleY(1); }
     }
 
     @keyframes terminal-close {
-      from { opacity: 1; clip-path: inset(0); transform: scaleY(1); filter: brightness(1); }
-      to { opacity: 0; clip-path: inset(48% 0); transform: scaleY(.04); filter: brightness(1.8); }
+      from { opacity: 1; transform: scaleY(1); }
+      to { opacity: 0; transform: scaleY(.04); }
     }
 
     @keyframes archive-window-open {
@@ -2081,7 +2085,7 @@
       }
       .nav-links.open { display: flex; flex-direction: column; }
       .nav-links a { height: 45px; padding: 0 15px; }
-      .nav-links a[aria-current="page"]::after { right: auto; width: 2px; height: 24px; }
+      .nav-links a[aria-current="page"]::after { top: 0; right: auto; bottom: 0; left: 0; width: 2px; height: auto; }
       .mobile-menu {
         width: 34px;
         height: 34px;
@@ -2170,6 +2174,15 @@
       .status-bar { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; padding: 10px 14px; line-height: 1.7; }
     }
 
+    @media (min-width: 621px) {
+      .profile-terminal {
+        left: 50%;
+        right: auto;
+        width: min(820px, calc(100% - 56px));
+        margin-left: calc(min(820px, calc(100% - 56px)) / -2);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; animation-delay: 0s !important; }
       .hero-art { animation: none !important; }
@@ -2250,12 +2263,12 @@
                   <div class="operator-photo-slider-wrap">
                     <div class="operator-photo-slider" id="operator-photo-slider" aria-label="Example profile photo gallery">
                       <span class="operator-photo-category">FAVOURITE CHARACTERS</span>
-                      <div class="operator-photo-slide scene-one" role="img" aria-label="Shadow the Hedgehog, photo 1 of 6" aria-hidden="false"><img class="operator-photo-image" src="./shadow-the-hedgehog-example.jpg" alt=""><span>SHADOW THE HEDGEHOG</span></div>
-                      <div class="operator-photo-slide scene-two" role="img" aria-label="MechaGodzilla, photo 2 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./mechagodzilla-example.jpg" alt=""><span>MECHAGODZILLA</span></div>
-                      <div class="operator-photo-slide scene-three" role="img" aria-label="Shin Godzilla, photo 3 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./shin-godzilla-example.jpg" alt=""><span>SHIN GODZILLA</span></div>
-                      <div class="operator-photo-slide scene-four" role="img" aria-label="Infinite, photo 4 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./infinite-the-jackal-example.jpg" alt=""><span>INFINITE</span></div>
-                      <div class="operator-photo-slide scene-five" role="img" aria-label="Loki, photo 5 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./loki-example.png" alt=""><span>LOKI</span></div>
-                      <div class="operator-photo-slide scene-six" role="img" aria-label="Ultron, photo 6 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./ultron-example.jpg" alt=""><span>ULTRON</span></div>
+                      <div class="operator-photo-slide scene-one" role="img" aria-label="Shadow the Hedgehog, photo 1 of 6" aria-hidden="false"><img class="operator-photo-image" src="./shadow-the-hedgehog-example.jpg" alt="" loading="lazy" decoding="async"><span>SHADOW THE HEDGEHOG</span></div>
+                      <div class="operator-photo-slide scene-two" role="img" aria-label="MechaGodzilla, photo 2 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./mechagodzilla-example.jpg" alt="" loading="lazy" decoding="async"><span>MECHAGODZILLA</span></div>
+                      <div class="operator-photo-slide scene-three" role="img" aria-label="Shin Godzilla, photo 3 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./shin-godzilla-example.jpg" alt="" loading="lazy" decoding="async"><span>SHIN GODZILLA</span></div>
+                      <div class="operator-photo-slide scene-four" role="img" aria-label="Infinite, photo 4 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./infinite-the-jackal-example.jpg" alt="" loading="lazy" decoding="async"><span>INFINITE</span></div>
+                      <div class="operator-photo-slide scene-five" role="img" aria-label="Loki, photo 5 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./loki-example.png" alt="" loading="lazy" decoding="async"><span>LOKI</span></div>
+                      <div class="operator-photo-slide scene-six" role="img" aria-label="Ultron, photo 6 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./ultron-example.jpg" alt="" loading="lazy" decoding="async"><span>ULTRON</span></div>
                     </div>
                     <div class="operator-photo-controls" aria-label="Photo controls">
                       <button class="operator-photo-arrow" id="operator-photo-prev" type="button" aria-label="Previous photo">‹</button>
@@ -2388,7 +2401,6 @@
     const accessLevelValue = document.getElementById("access-level-value");
     const greetingPhrase = document.getElementById("greeting-phrase");
     const operatorName = document.getElementById("operator-name");
-    const heroCopy = document.querySelector(".hero-copy");
     const profileTerminal = document.getElementById("profile-terminal");
     const profileTerminalOpen = document.getElementById("profile-terminal-open");
     const profileTerminalClose = document.getElementById("profile-terminal-close");
@@ -2902,6 +2914,9 @@ I know there's no remedy.`;
       window.clearTimeout(poemCloseFallback);
       poemWindow.classList.remove("is-closing");
       poemWindow.hidden = true;
+      document.body.style.willChange = "opacity";
+      void archiveListWindow.offsetWidth;
+      requestAnimationFrame(() => { document.body.style.willChange = ""; });
     }
 
     poemWindow.addEventListener("animationend", event => {
@@ -3019,7 +3034,6 @@ I know there's no remedy.`;
         profileTerminal.classList.remove("is-closing");
         profileTerminal.hidden = true;
         hero.classList.remove("has-profile-terminal");
-        heroCopy.hidden = false;
         profileTerminalOpen.focus();
       };
 
@@ -3039,7 +3053,6 @@ I know there's no remedy.`;
       window.clearInterval(terminalTypingTimer);
       window.clearTimeout(terminalBiographyTimer);
       hero.classList.add("has-profile-terminal");
-      heroCopy.hidden = true;
       profileTerminal.classList.remove("is-closing");
       profileTerminal.hidden = false;
       profileTerminal.classList.remove("is-opening");
