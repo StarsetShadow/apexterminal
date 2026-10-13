@@ -990,12 +990,10 @@
     }
 
     .archive-list-window:has(~ .album-window:not([hidden])) {
-      opacity: 0.4;
       pointer-events: none;
     }
 
     .archive-window:has(~ .archive-list-window:not([hidden])) {
-      opacity: 0.4;
       pointer-events: none;
     }
 
@@ -3004,6 +3002,9 @@ I know there's no remedy.`;
       window.clearTimeout(albumCloseFallback);
       albumWindow.classList.remove("is-closing");
       albumWindow.hidden = true;
+      document.body.style.willChange = "opacity";
+      void archiveListWindow.offsetWidth;
+      requestAnimationFrame(() => { document.body.style.willChange = ""; });
     }
 
     albumWindow.addEventListener("animationend", event => {
