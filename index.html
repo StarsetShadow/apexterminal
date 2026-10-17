@@ -670,14 +670,12 @@
     .archive-list-item.locked strong {
       color: #6a6a6a;
       filter: blur(5px);
-      will-change: filter;
     }
 
     .archive-folder.locked span:not(.lock-symbol),
     .archive-list-item.locked span:not(.lock-symbol) {
       color: #5a5a5a;
       filter: blur(5px);
-      will-change: filter;
     }
 
     .archive-folder.locked .lock-symbol,
@@ -692,7 +690,6 @@
       animation: lock-glitch .08s steps(1, end) infinite;
       pointer-events: none;
       z-index: 2;
-      will-change: transform;
     }
 
     .archive-folder.locked .lock-symbol .lock-icon,
@@ -709,7 +706,6 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      will-change: transform, opacity;
     }
 
     .archive-list-item.locked::before {
@@ -883,15 +879,6 @@
       letter-spacing: .08em;
       text-transform: uppercase;
     }
-      display: block;
-      margin-bottom: 6px;
-      overflow-wrap: anywhere;
-      color: #e8e2df;
-      font-size: 9px;
-      font-weight: 400;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
 
     .archive-list-item span {
       display: block;
@@ -916,6 +903,122 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+    }
+
+    .metamorphosis-folder {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .metamorphosis-folder .metamorphosis-book-icon {
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      color: var(--red-bright);
+    }
+
+    .metamorphosis-book-icon svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .metamorphosis-folder .metamorphosis-book-icon svg {
+      color: var(--red-bright);
+    }
+
+    .metamorphosis-folder .metamorphosis-folder-enter {
+      margin-left: auto;
+      align-self: center;
+      color: var(--red-bright);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .metamorphosis-folder strong {
+      margin-bottom: 0;
+    }
+
+    .poem-track:focus-visible {
+      outline: 1px solid var(--red-bright);
+      outline-offset: 2px;
+    }
+
+    .poem-track {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .poem-track.locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: #2a2a2a;
+      background: linear-gradient(145deg, rgba(18, 18, 18, .93), rgba(10, 10, 10, .96));
+    }
+
+    .poem-track.locked:hover {
+      border-color: #2a2a2a;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .poem-track.locked .lock-symbol {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--red-bright);
+      animation: lock-glitch .08s steps(1, end) infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .poem-track.locked .lock-symbol .lock-icon {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .poem-track.locked::before,
+    .poem-track.locked::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .poem-track.locked::before {
+      border: 1px solid var(--red-bright);
+      animation: locked-card-glitch-a .12s steps(1, end) infinite;
+    }
+
+    .poem-track.locked::after {
+      border: 1px solid #7b1ea6;
+      animation: locked-card-glitch-b .13s steps(1, end) infinite;
+    }
+
+    .poem-track:active {
+      border-color: var(--red-bright);
+      background: rgba(227, 38, 54, .22);
+      transform: scale(.985);
+    }
+
+    .poem-track.is-clicked::after {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(255, 51, 71, .38) 50%, transparent);
+      content: "";
+      animation: poem-row-sweep .26s ease-out both;
+    }
+
+    @keyframes poem-row-sweep {
+      from { opacity: 1; transform: translateX(-100%); }
+      to { opacity: 0; transform: translateX(100%); }
     }
 
     .literature-card strong {
@@ -967,7 +1070,7 @@
 
     .poem-window {
       position: fixed;
-      z-index: 12;
+      z-index: 13;
       inset: 0;
       width: min(520px, calc(100% - 24px));
       max-width: none;
@@ -996,6 +1099,17 @@
     .archive-window:has(~ .archive-list-window:not([hidden])) {
       pointer-events: none;
     }
+
+    body:has(.poem-window:not([hidden])) .album-window { pointer-events: none; }
+
+    body:has(.poem-window:not([hidden])) .hero::before,
+    body:has(.poem-window:not([hidden])) .hero-scanline,
+    body:has(.album-window:not([hidden])) .hero::before,
+    body:has(.album-window:not([hidden])) .hero-scanline,
+    body:has(.archive-list-window:not([hidden])) .hero::before,
+    body:has(.archive-list-window:not([hidden])) .hero-scanline,
+    body:has(.archive-window:not([hidden])) .hero::before,
+    body:has(.archive-window:not([hidden])) .hero-scanline { animation-play-state: paused; }
 
     .poem-window-header {
       min-height: 40px;
@@ -1174,6 +1288,45 @@
         "list  list";
       align-items: center;
       gap: 10px 18px;
+    }
+
+    .album-side { display: contents; }
+
+    .album-window.is-metamorphosis .album-window-content {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "list side";
+      align-items: start;
+    }
+
+    .album-window.is-metamorphosis .album-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      grid-area: side;
+    }
+
+    .album-window.is-metamorphosis .album-info {
+      align-items: center;
+      text-align: center;
+      max-width: 150px;
+    }
+
+    .album-window.is-metamorphosis .album-meta {
+      text-transform: none;
+      white-space: pre-line;
+    }
+
+    .album-window.is-metamorphosis {
+      width: min(600px, calc(100% - 24px));
+    }
+
+    /* Poem rows: let long descriptions wrap instead of truncating with an ellipsis */
+    .poem-track .album-track-title,
+    .poem-track .album-track-artist {
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
     }
 
     .album-cover {
@@ -1825,7 +1978,7 @@
     }
 
     .card {
-      min-height: 172px;
+      min-height: 200px;
       position: relative;
       padding: 20px 21px;
       border: 1px solid var(--line);
@@ -2168,8 +2321,20 @@
       .hero-coordinates { z-index: 2; right: 14px; bottom: 13px; font-size: 8px; }
       .dashboard { grid-template-columns: 1fr; gap: 10px; }
       .dashboard .card:first-child { grid-column: auto; }
-      .card { min-height: 145px; }
+      .card { min-height: 188px; }
       .status-bar { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; padding: 10px 14px; line-height: 1.7; }
+      /* Metamorphosis: stack the cover block above the list instead of beside it,
+         so the poem rows get the full window width on narrow screens. */
+      .album-window.is-metamorphosis .album-window-content {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "side"
+          "list";
+        align-items: stretch;
+        gap: 14px;
+      }
+      .album-window.is-metamorphosis .album-cover { width: 104px; }
+      .album-window.is-metamorphosis .album-tracklist { max-height: min(320px, 56vh); }
     }
 
     @media (min-width: 621px) {
@@ -2250,23 +2415,23 @@
                   </div>
                   <div class="operator-dossier-field about-me">
                     <dt>NOTE</dt>
-                    <dd>If you desire to truly be divulged of me, converse with me, I am not difficult to converse with, just anticipate a monotonous demeanour because that is my state 99% of the time.</dd>
+                    <dd>If you desire to truly be divulged of me, converse with me, just anticipate a monotonous demeanour because that is my state 99% of the time.</dd>
                   </div>
                   <div class="operator-dossier-field purpose">
-                    <dt>Purpose</dt>
-                    <dd>A private space designed to preserve and divert myself from what i can't reverse.</dd>
+                    <dt>Purpose Of Terminal</dt>
+                    <dd>A private environment designed for preservation.</dd>
                   </div>
                 </dl>
                 <div class="operator-dossier-profile">
                   <div class="operator-photo-slider-wrap">
                     <div class="operator-photo-slider" id="operator-photo-slider" aria-label="Example profile photo gallery">
                       <span class="operator-photo-category">FAVOURITE CHARACTERS</span>
-                      <div class="operator-photo-slide scene-one" role="img" aria-label="Shadow the Hedgehog, photo 1 of 6" aria-hidden="false"><img class="operator-photo-image" src="./shadow-the-hedgehog-example.jpg" alt="" loading="lazy" decoding="async"><span>SHADOW THE HEDGEHOG</span></div>
-                      <div class="operator-photo-slide scene-two" role="img" aria-label="MechaGodzilla, photo 2 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./mechagodzilla-example.jpg" alt="" loading="lazy" decoding="async"><span>MECHAGODZILLA</span></div>
-                      <div class="operator-photo-slide scene-three" role="img" aria-label="Shin Godzilla, photo 3 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./shin-godzilla-example.jpg" alt="" loading="lazy" decoding="async"><span>SHIN GODZILLA</span></div>
-                      <div class="operator-photo-slide scene-four" role="img" aria-label="Infinite, photo 4 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./infinite-the-jackal-example.jpg" alt="" loading="lazy" decoding="async"><span>INFINITE</span></div>
-                      <div class="operator-photo-slide scene-five" role="img" aria-label="Loki, photo 5 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./loki-example.png" alt="" loading="lazy" decoding="async"><span>LOKI</span></div>
-                      <div class="operator-photo-slide scene-six" role="img" aria-label="Ultron, photo 6 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./ultron-example.jpg" alt="" loading="lazy" decoding="async"><span>ULTRON</span></div>
+                      <div class="operator-photo-slide scene-one" role="img" aria-label="Shadow the Hedgehog, photo 1 of 6" aria-hidden="false"><img class="operator-photo-image" src="./assets/shadow-the-hedgehog-example.jpg" alt="" loading="lazy" decoding="async"><span>SHADOW THE HEDGEHOG</span></div>
+                      <div class="operator-photo-slide scene-two" role="img" aria-label="MechaGodzilla, photo 2 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./assets/mechagodzilla-example.jpg" alt="" loading="lazy" decoding="async"><span>MECHAGODZILLA</span></div>
+                      <div class="operator-photo-slide scene-three" role="img" aria-label="Shin Godzilla, photo 3 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./assets/shin-godzilla-example.jpg" alt="" loading="lazy" decoding="async"><span>SHIN GODZILLA</span></div>
+                      <div class="operator-photo-slide scene-four" role="img" aria-label="Infinite, photo 4 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./assets/infinite-the-jackal-example.jpg" alt="" loading="lazy" decoding="async"><span>INFINITE</span></div>
+                      <div class="operator-photo-slide scene-five" role="img" aria-label="Loki, photo 5 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./assets/loki-example.png" alt="" loading="lazy" decoding="async"><span>LOKI</span></div>
+                      <div class="operator-photo-slide scene-six" role="img" aria-label="Ultron, photo 6 of 6" aria-hidden="true" hidden><img class="operator-photo-image" src="./assets/ultron-example.jpg" alt="" loading="lazy" decoding="async"><span>ULTRON</span></div>
                     </div>
                     <div class="operator-photo-controls" aria-label="Photo controls">
                       <button class="operator-photo-arrow" id="operator-photo-prev" type="button" aria-label="Previous photo">‹</button>
@@ -2366,15 +2531,17 @@
           <button class="album-window-close" id="album-window-close" type="button" aria-label="Close album window">×</button>
         </div>
         <div class="album-window-content">
-          <div class="album-cover" id="album-cover"></div>
-          <div class="album-info">
-            <h2 id="album-title">Project Melody Phase: <span class="glitch-final-album" data-text="Final">Final</span></h2>
-            <p class="album-meta">Fragments Collection</p>
+          <div class="album-side">
+            <div class="album-cover" id="album-cover"></div>
+            <div class="album-info">
+              <h2 id="album-title">Project Melody Phase: <span class="glitch-final-album" data-text="Final">Final</span></h2>
+              <p class="album-meta">Fragments Collection</p>
+            </div>
+            <a class="album-play-all" id="album-play-all" href="about:blank" target="_blank" rel="noopener noreferrer" hidden>
+              <span class="album-play-all-icon" aria-hidden="true">▶</span>
+              <span class="album-play-all-text">Play playlist</span>
+            </a>
           </div>
-          <a class="album-play-all" id="album-play-all" href="about:blank" target="_blank" rel="noopener noreferrer" hidden>
-            <span class="album-play-all-icon" aria-hidden="true">▶</span>
-            <span class="album-play-all-text">Play playlist</span>
-          </a>
           <div class="album-tracklist" id="album-tracklist">
             <!-- Populated by JS -->
           </div>
@@ -2436,6 +2603,7 @@
     const poemWindowContent = document.getElementById("poem-window-content");
     let poemCloseFallback;
     let poemTransitionId = 0;
+    let poemFocusReturn = archiveListBack;
 
     const albumWindow = document.getElementById("album-window");
     const albumWindowClose = document.getElementById("album-window-close");
@@ -2444,6 +2612,7 @@
     const albumPlayAll = document.getElementById("album-play-all");
     let albumCloseFallback;
     let albumTransitionId = 0;
+    let poemTrackOpenTimer;
 
     const projectMelodyTracks = [
       { title: "Signal Acquisition" },
@@ -2477,6 +2646,16 @@
       { n: 21, title: "PHASES", artist: "SCATTERBRAIN", dur: "03:46" }
     ];
 
+    const metamorphosisPoems = [
+      { title: "Avenoir", description: "Drowning in the colour of what could've been. // By Shadow" },
+      { title: "Love Song", description: "The words were wrong; the armour was not. // By Shadow" },
+      { title: "Solivagant", description: "Alone, and fluent in the rain. // By Shadow" },
+      { title: "October", description: "Birth of something, now death of everything. // By Shadow" },
+      { title: "Blood", description: "For the clarity that only blood could give. // By Shadow" },
+      { title: "The Room", description: "An earthquake behind the walls. // By Shadow" },
+      { locked: true }
+    ];
+
     const albums = {
       "Perspective": {
         title: "Perspective",
@@ -2485,28 +2664,66 @@
         playlistUrl: "https://open.spotify.com/playlist/5rwJ5eVQB39PqK9Ir8VTb4?si=727793541cd843c8",
         tracklist: perspectiveTracks
       },
+      "Metamorphosis": {
+        title: "Metamorphosis",
+        meta: "New beginnings to the repeating end.\nBy Shadow",
+        coverImage: "./assets/metamorphosis.jpg",
+        poems: metamorphosisPoems
+      },
       "Project Melody Phase: Final": {
         title: "Project Melody Phase: Final",
         meta: "Fragments Collection"
       }
     };
 
-    const avenoirPoem = `I walk under the dim moonlight
-Just so i can feel at home
-I write under the warm sunlight
-Just to forget i'm alone
+    const avenoirPoem = `A starlit sky pours its colour down a river,
+Despite the colours the water is bitter,
+I am immured in what could've beens,
+And i drown as the moonlight dims.
 
-I once did both not on my own
-Yet now it all seems unknown
-How does one see anything in red?
-It's silent however enough was said
+I am tangled in the steps we took together,
+Despite being free i retrace them untethered,
+I am a ghost just haunting your footsteps,
+I am dead, yet I am drowning in ebbs.
 
-The moonlight gleams slightly more
-This avenoir my mind pours
-Drowning in this river of memories
-Something pulls me under from remedy
+I am not fond of this blinding light,
+So i walk under this darkened night,
+As an avenoir cascades over me,
+Tangled and drowning in memories.
 
-I'm starting to realize no one's there to save me`;
+You'll never be aware of my suffering,
+I let the avenoir wash all my colouring.`;
+
+    const roomPoem = `A cold room adorned by remnants of the past,
+Blood stains from the shattering of the glass.
+The room gets smaller at random times,
+Am i still alive or am i losing my mind?
+
+A slumber is supposed to put me to rest,
+However falling asleep to dream is a jest,
+I alter the room each night,
+I try to sleep with no light.
+
+An earthquake had transpired;
+However it had been a while,
+Yet the room shakes violently,
+Screams are harboured silently,
+
+I wake to the room, shrunken,
+Deep my heart has sunken,
+I wake to the belief that this is delusion,
+I rub my eyes and i see no illusion,
+
+Close them again and go to sleep,
+Disregard the twinging underneath,
+Drape in covers hand-sewn in regret,
+Slumber away as the body frets.
+
+Wake up to the room normal again,
+It's fleeting moment of feeling sane.
+Attempt to believe there's some progress,
+Assimilate, this is too much to process,
+Night falls and it all begins to regress.`;
 
     const loveSongPoem = `This was meant to be a love song,
 But its not, the words are all wrong.
@@ -2610,11 +2827,7 @@ I know there's no remedy.`;
 
     const archiveContent = {
       "Literature": [
-        { title: "Avenoir", description: "Moonlight, and the red i don't name. // By Shadow", type: "poem" },
-        { title: "Love Song", description: "The words were wrong; the armour was not. // By Shadow", type: "poem" },
-        { title: "Solivagant", description: "Alone, and fluent in the rain. // By Shadow", type: "poem" },
-        { title: "October", description: "Birth of something, now death of everything. // By Shadow", type: "poem" },
-        { title: "Blood", description: "For the clarity that only blood could give. // By Shadow", type: "poem" }
+        { title: "Metamorphosis", description: "Every poem, compiled in one place // By Shadow", type: "folder" }
       ],
       "Fragments": [
         { title: "Project Melody Phase: Final", description: "Broken pieces coalesced with new pieces" },
@@ -2768,6 +2981,18 @@ I know there's no remedy.`;
             </div>
           `;
         }
+        if (item.type === "folder") {
+          return `
+            <div class="archive-list-item metamorphosis-folder" tabindex="0" role="button" data-type="folder" data-title="${item.title}">
+              <span class="metamorphosis-book-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12" /><path d="M19 16h-12a2 2 0 0 0 -2 2" /><path d="M9 8h6" /></svg></span>
+              <div class="literature-content">
+                <strong>${item.title}</strong>
+                <span class="literature-description">${item.description}</span>
+              </div>
+              <span class="metamorphosis-folder-enter" aria-hidden="true">›</span>
+            </div>
+          `;
+        }
         return `
           <div class="archive-list-item" tabindex="0" role="button" data-type="${item.type || ''}" data-title="${item.title}">
             <strong>${item.title}</strong>
@@ -2815,10 +3040,13 @@ I know there's no remedy.`;
       if (item.classList.contains("locked")) return;
       const type = item.dataset.type;
       const title = item.dataset.title;
-      if (type === "poem") {
-        event.preventDefault();
-        openPoemWindow(title);
-      } else if (title === "Perspective") {
+        if (type === "poem") {
+          event.preventDefault();
+          openPoemWindow(title);
+        } else if (type === "folder") {
+          event.preventDefault();
+          openAlbumWindow(title);
+        } else if (title === "Perspective") {
         event.preventDefault();
         openAlbumWindow("Perspective");
       } else if (title === "Project Melody Phase: Final") {
@@ -2839,12 +3067,12 @@ I know there's no remedy.`;
 
     document.addEventListener("keydown", event => {
       if (event.key === "Escape") {
-        if (!albumWindow.hidden) {
-          event.preventDefault();
-          closeAlbumWindow(true);
-        } else if (!poemWindow.hidden) {
+        if (!poemWindow.hidden) {
           event.preventDefault();
           closePoemWindow(true);
+        } else if (!albumWindow.hidden) {
+          event.preventDefault();
+          closeAlbumWindow(true);
         } else if (!archiveListWindow.hidden) {
           closeArchiveListWindow(true);
         } else if (!archiveWindow.hidden) {
@@ -2859,8 +3087,8 @@ I know there's no remedy.`;
       if (!target) return;
 
       const openLayers = [
-        { el: albumWindow, close: () => closeAlbumWindow(true) },
         { el: poemWindow, close: () => closePoemWindow(true) },
+        { el: albumWindow, close: () => closeAlbumWindow(true) },
         { el: archiveListWindow, close: () => closeArchiveListWindow(true) },
         { el: archiveWindow, close: () => closeArchiveWindow(true) }
       ];
@@ -2873,7 +3101,8 @@ I know there's no remedy.`;
       }
     });
 
-    function openPoemWindow(title) {
+    function openPoemWindow(title, returnFocusEl) {
+      poemFocusReturn = returnFocusEl || archiveListBack;
       ++poemTransitionId;
       window.clearTimeout(poemCloseFallback);
       poemWindow.hidden = false;
@@ -2885,6 +3114,7 @@ I know there's no remedy.`;
 
       const poems = {
         "Avenoir": avenoirPoem,
+        "The Room": roomPoem,
         "Love Song": loveSongPoem,
         "Solivagant": solivagantPoem,
         "October": octoberPoem,
@@ -2902,7 +3132,7 @@ I know there's no remedy.`;
       poemWindow.classList.add("is-closing");
       poemWindow.inert = true;
       poemWindow.setAttribute("aria-hidden", "true");
-      if (returnFocus) archiveListBack.focus();
+      if (returnFocus) poemFocusReturn.focus();
 
       poemCloseFallback = window.setTimeout(() => finishPoemWindowClose(transitionId), 300);
     }
@@ -2927,6 +3157,37 @@ I know there's no remedy.`;
 
     poemWindowClose.addEventListener("click", () => closePoemWindow(true));
 
+    function activatePoemTrack(track) {
+      track.classList.remove("is-clicked");
+      void track.offsetWidth;
+      track.classList.add("is-clicked");
+      window.clearTimeout(poemTrackOpenTimer);
+      poemTrackOpenTimer = window.setTimeout(() => {
+        if (albumWindow.hidden) return;
+        openPoemWindow(track.dataset.poem, albumWindowClose);
+      }, 220);
+    }
+
+    albumTracklist.addEventListener("click", event => {
+      const track = event.target.closest(".album-track");
+      if (!track || !track.dataset.poem) return;
+      activatePoemTrack(track);
+    });
+
+    albumTracklist.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const track = event.target.closest(".album-track");
+      if (!track || !track.dataset.poem) return;
+      event.preventDefault();
+      activatePoemTrack(track);
+    });
+
+    albumTracklist.addEventListener("animationend", event => {
+      if (event.animationName === "poem-row-sweep") {
+        event.target.classList.remove("is-clicked");
+      }
+    });
+
     function renderAlbumTracklist() {
       albumTracklist.innerHTML = projectMelodyTracks.map((track, i) => `
         <div class="album-track" data-index="${i}">
@@ -2949,6 +3210,34 @@ I know there's no remedy.`;
       `).join("");
     }
 
+    function renderPoemTracklist() {
+      albumTracklist.innerHTML = metamorphosisPoems.map((poem, i) => {
+        if (poem.locked) {
+          return `
+            <div class="album-track poem-track locked" style="pointer-events: none;">
+              <span class="album-track-num">${String(i + 1).padStart(2, "0")}</span>
+              <span class="lock-symbol glitch-lock" aria-label="Locked">
+                <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+                  <rect x="5" y="11" width="14" height="10" />
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                  <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none" />
+                </svg>
+              </span>
+            </div>
+          `;
+        }
+        return `
+          <div class="album-track poem-track" data-poem="${poem.title}" tabindex="0" role="button" aria-label="Read ${poem.title}">
+            <span class="album-track-num">${String(i + 1).padStart(2, "0")}</span>
+            <span class="album-track-info">
+              <span class="album-track-title">${poem.title}</span>
+              <span class="album-track-artist">${poem.description}</span>
+            </span>
+          </div>
+        `;
+      }).join("");
+    }
+
     function openAlbumWindow(albumKey) {
       const cfg = albums[albumKey];
       if (!cfg) return;
@@ -2959,6 +3248,7 @@ I know there's no remedy.`;
       albumWindow.setAttribute("aria-hidden", "false");
       albumWindow.classList.remove("is-closing");
       albumWindow.classList.add("is-opening");
+      albumWindow.classList.toggle("is-metamorphosis", Boolean(cfg.poems));
 
       albumWindowTitle.textContent = cfg.title;
       document.getElementById("album-title").textContent = cfg.title;
@@ -2976,7 +3266,9 @@ I know there's no remedy.`;
         ? `<img src="${cfg.coverImage}" alt="${cfg.title} album cover">`
         : "";
 
-      if (cfg.tracklist) {
+      if (cfg.poems) {
+        renderPoemTracklist();
+      } else if (cfg.tracklist) {
         renderPerspectiveTracklist();
       } else {
         renderAlbumTracklist();
@@ -3002,6 +3294,7 @@ I know there's no remedy.`;
       window.clearTimeout(albumCloseFallback);
       albumWindow.classList.remove("is-closing");
       albumWindow.hidden = true;
+      albumTracklist.querySelectorAll(".poem-track").forEach(row => row.classList.remove("is-clicked"));
       document.body.style.willChange = "opacity";
       void archiveListWindow.offsetWidth;
       requestAnimationFrame(() => { document.body.style.willChange = ""; });
