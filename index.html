@@ -2596,6 +2596,7 @@
     const loadingDuration = 8000;
     const loadingPause = 3000;
     const glitchDuration = 650;
+    const loadingTimers = [];
 
     const poemWindow = document.getElementById("poem-window");
     const poemWindowClose = document.getElementById("poem-window-close");
@@ -3415,7 +3416,8 @@ I know there's no remedy.`;
       accessLevelValue.setAttribute("aria-label", "0");
       accessLevelValue.classList.add("is-corrupted");
       hero.classList.add("is-loading");
-      window.setTimeout(() => {
+
+      const loadingPauseTimer = window.setTimeout(() => {
         hero.classList.add("is-typing");
         let position = 0;
         const accessTypingTimer = window.setInterval(() => {
@@ -3437,8 +3439,12 @@ I know there's no remedy.`;
           }
         }, 110);
       }, loadingPause);
-      window.setTimeout(() => hero.classList.add("is-glitching"), loadingDuration - glitchDuration);
-      window.setTimeout(() => {
+      loadingTimers.push(loadingPauseTimer);
+
+      const glitchTimer = window.setTimeout(() => hero.classList.add("is-glitching"), loadingDuration - glitchDuration);
+      loadingTimers.push(glitchTimer);
+
+      const finishTimer = window.setTimeout(() => {
         hero.classList.remove("is-loading", "is-glitching", "has-loading-dots", "is-blinking-dots");
         greetingPhrase.textContent = "Welcome,";
         greetingPhrase.dataset.text = "Welcome,";
@@ -3461,6 +3467,7 @@ I know there's no remedy.`;
           }
         }, 55);
       }, loadingDuration);
+      loadingTimers.push(finishTimer);
     }
 
     signalButton.addEventListener("click", () => {
@@ -3484,6 +3491,22 @@ I know there's no remedy.`;
         menuToggle.setAttribute("aria-expanded", "false");
         menuToggle.setAttribute("aria-label", "Open navigation");
       }
+    });
+
+    document.addEventListener("dblclick", () => {
+      if (document.body.classList.contains("access-granted")) return;
+      loadingTimers.forEach((timer) => {
+        window.clearTimeout(timer);
+        window.clearInterval(timer);
+      });
+      loadingTimers.length = 0;
+      hero.classList.remove("is-loading", "is-typing", "is-glitching", "has-loading-dots", "is-blinking-dots");
+      terminalMessage.textContent = warningMessage;
+      accessLevelValue.textContent = "01";
+      accessLevelValue.setAttribute("aria-label", "01");
+      accessLevelValue.classList.remove("is-corrupted");
+      document.body.classList.add("access-granted");
+      document.getElementById("hero-title").setAttribute("aria-label", warningMessage);
     });
   </script>
 </body>
