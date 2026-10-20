@@ -1030,19 +1030,26 @@
       margin-bottom: 0;
     }
 
-    .literature-author {
-      display: none;
-    }
-
     .literature-description {
       color: var(--muted);
       font-size: 8px;
       line-height: 1.5;
       overflow-wrap: anywhere;
+      white-space: pre-line;
     }
 
-    .literature-poem {
-      display: none;
+    .archive-card-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .playlist-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      color: var(--red-bright);
     }
 
     .literature-card:hover,
@@ -1238,12 +1245,14 @@
       width: min(780px, calc(100% - 32px));
       max-width: none;
       height: max-content;
+      max-height: min(95vh, max-content);
       margin: auto;
       padding: 0;
       border: 1px solid rgba(227, 38, 54, .55);
       background: #0b0a0a;
       color: var(--paper);
       box-shadow: 0 0 40px rgba(227, 38, 54, .2), inset 0 0 24px rgba(227, 38, 54, .035);
+      overflow-y: auto;
     }
 
     .album-window[hidden] { display: none; }
@@ -1279,15 +1288,15 @@
     }
 
     .album-window-content {
-      padding: 24px;
+      padding: 12px;
       display: grid;
-      grid-template-columns: 150px 1fr;
+      grid-template-columns: minmax(80px, 160px) 1fr;
       grid-template-areas:
         "cover info"
         "cover play"
         "list  list";
-      align-items: center;
-      gap: 14px 24px;
+      align-items: start;
+      gap: 4px 8px;
     }
 
     .album-side { display: contents; }
@@ -1331,8 +1340,8 @@
 
     .album-cover {
       grid-area: cover;
-      justify-self: center;
-      width: 150px;
+      justify-self: start;
+      width: min(150px, 35vw);
       aspect-ratio: 1;
       border: 1px solid #302222;
       background: linear-gradient(145deg, rgba(80, 60, 100, .18), rgba(120, 100, 60, .14));
@@ -1390,6 +1399,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      margin-top: 8px;
     }
 
     #album-title {
@@ -1782,16 +1792,6 @@
       animation: pulse 1s steps(2, start) infinite;
     }
 
-    .loading-mark {
-      width: 20px;
-      height: 20px;
-      flex: 0 0 20px;
-      border: 1px solid #6d252d;
-      border-top-color: var(--red-bright);
-      border-radius: 50%;
-      animation: rotate .8s linear infinite;
-    }
-
     .hero:not(.is-loading) .access-loading,
     .hero.is-loading .terminal-content { display: none; }
     .hero:not(.is-loading) .terminal-content {
@@ -1938,10 +1938,6 @@
     .button.is-consumed {
       visibility: hidden;
       pointer-events: none;
-    }
-
-    .hero-art {
-      display: none;
     }
 
     .hero-coordinates {
@@ -2212,9 +2208,10 @@
 
     @media (max-width: 900px) {
       body { padding: 0 30px; }
-      .hero-art { right: 5%; width: 32vw; opacity: .7; }
       .hero-copy { padding: 48px 42px; }
       .dashboard { grid-template-columns: 1fr 1fr; }
+      .album-window { width: min(640px, calc(100% - 24px)); }
+      .album-window-content { padding: 12px; gap: 4px 8px; }
     }
 
     @media (max-width: 620px) {
@@ -2289,35 +2286,9 @@
         line-height: 1.35;
       }
       .access-loading { min-height: 0; }
-      .loading-mark { width: 16px; height: 16px; flex-basis: 16px; margin-top: 5px; }
       .hero-description { max-width: 100%; }
       .hero-actions { flex-wrap: wrap; gap: 10px; }
       .hero-actions .button { flex: 1 1 145px; padding: 0 12px; }
-      .hero-art {
-        z-index: 0;
-        inset: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: auto;
-        aspect-ratio: auto;
-        border: 0;
-        box-shadow: none;
-        opacity: 1;
-        transform: none;
-        animation-name: signal-jitter-mobile;
-      }
-      .art-image {
-        object-position: center 42%;
-        filter: grayscale(.35) sepia(.12) saturate(.65) brightness(.48) contrast(1.16);
-      }
-      .hero-art::before {
-        background:
-          repeating-linear-gradient(to bottom, transparent 0 3px, rgba(8, 4, 7, .5) 4px),
-          linear-gradient(90deg, rgba(9, 9, 9, .72), rgba(9, 9, 9, .54) 65%, rgba(9, 9, 9, .43)),
-          linear-gradient(0deg, rgba(9, 9, 9, .72), transparent 45%, rgba(9, 9, 9, .2));
-        mix-blend-mode: normal;
-      }
       .hero-coordinates { z-index: 2; right: 14px; bottom: 13px; font-size: 8px; }
       .dashboard { grid-template-columns: 1fr; gap: 10px; }
       .dashboard .card:first-child { grid-column: auto; }
@@ -2335,6 +2306,19 @@
       }
       .album-window.is-metamorphosis .album-cover { width: 104px; }
       .album-window.is-metamorphosis .album-tracklist { max-height: min(320px, 56vh); }
+
+      /* sad_songs / system_failure: stack cover, info, play vertically on narrow screens */
+      .album-window:not(.is-metamorphosis) .album-window-content {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "cover"
+          "info"
+          "play"
+          "list";
+        gap: 8px;
+      }
+      .album-window:not(.is-metamorphosis) .album-cover { width: 120px; }
+      .album-window:not(.is-metamorphosis) .album-tracklist { max-height: min(240px, 50vh); }
     }
 
     @media (min-width: 621px) {
@@ -2348,7 +2332,6 @@
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; animation-delay: 0s !important; }
-      .hero-art { animation: none !important; }
       .hero::before, .hero-scanline { animation: none !important; }
       .hero-scanline { opacity: .35; transform: rotate(-24deg); }
       .loading-dot { opacity: 1; animation: none; }
@@ -2383,7 +2366,7 @@
         <div class="hero-copy">
           <p class="eyebrow"><span class="operator-glitch" id="greeting-phrase" data-text="Welcome back,">Welcome back,</span> <span class="operator-glitch" id="operator-name" data-text="Shadow">Shadow</span></p>
           <h1 id="hero-title" aria-label="Verifying access"><span class="access-loading" role="status"><span class="loading-prompt" aria-hidden="true">&gt; </span><span class="access-label" data-text="VERIFYING ACCESS"></span><span class="loading-dots" aria-hidden="true"><span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></span><span class="loading-cursor" aria-hidden="true">_</span></span><span class="terminal-content"><span class="terminal-prompt" aria-hidden="true">&gt; </span><span class="terminal-message" aria-hidden="true"></span><span class="terminal-cursor" aria-hidden="true">_</span></span></h1>
-          <p class="hero-description" id="hero-description" aria-hidden="true"><span class="hero-description-line"><span class="terminal-prompt">&gt;</span> Access level 01, read only</span><span class="hero-description-line"><span class="terminal-prompt">&gt;</span> Directories: three remain locked</span></p>
+          <p class="hero-description" id="hero-description" aria-hidden="true"><span class="hero-description-line"><span class="terminal-prompt">&gt;</span> Access level 01, read only</span><span class="hero-description-line"><span class="terminal-prompt">&gt;</span> Directories: two remain locked</span></p>
           <div class="hero-actions">
             <button class="button" id="signal-toggle" type="button"><span aria-hidden="true">◉</span> Initialize Terminal</button>
           </div>
@@ -2478,7 +2461,7 @@
           <a class="card-link" id="archive-window-open" href="#archive-window" aria-haspopup="dialog" aria-controls="archive-window" aria-expanded="false">Access archive <span>↗</span></a>
         </article>
         <article class="card" id="about">
-          <div class="card-top"><span>Identity // 002</span><span class="card-number">[ C ]</span></div>
+          <div class="card-top"><span>Identity // 002</span><span class="card-number">[ B ]</span></div>
           <h3>Admin Profile</h3>
           <p>For if you seek to be divulged of me.</p>
           <a class="card-link" id="profile-terminal-open" href="#home">Open terminal <span>↗</span></a>
@@ -2623,7 +2606,7 @@
       { title: "Final Transmission" }
     ];
 
-    const perspectiveTracks = [
+    const sadsongsTracks = [
       { n: 1, title: "heavy metal (feat. Rahzel)", artist: "Bring Me The Horizon, Rahzel", dur: "04:00" },
       { n: 2, title: "p a r a d 0 x 1 c", artist: "STARSET", dur: "05:10" },
       { n: 3, title: "a n n 1 h 1 l a t 1 0 n", artist: "STARSET", dur: "04:10" },
@@ -2654,16 +2637,40 @@
       { title: "October", description: "Birth of something, now death of everything. // By Shadow" },
       { title: "Blood", description: "For the clarity that only blood could give. // By Shadow" },
       { title: "The Room", description: "An earthquake behind the walls. // By Shadow" },
+      { locked: true },
       { locked: true }
     ];
 
     const albums = {
-      "Perspective": {
-        title: "Perspective",
-        meta: "melodies that divulge a fable from my perspective // By Shadow",
+      "sad_songs": {
+        title: "sad_songs",
+        meta: "Some songs that could resonate",
         coverImage: "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84dda3686c1a23a681336b09bd",
         playlistUrl: "https://open.spotify.com/playlist/5rwJ5eVQB39PqK9Ir8VTb4?si=727793541cd843c8",
-        tracklist: perspectiveTracks
+        tracklist: sadsongsTracks
+      },
+      "system_failure": {
+        title: "system_failure",
+        meta: "system_failure.cause{critical_files_missing}.scanning MBR partition (0% complete)",
+        coverImage: "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8407388112fe28c03e02761f45",
+        playlistUrl: "https://open.spotify.com/playlist/6quSRstUUMRzEw81sOReSp?si=ndkYvYQWSaSrLLRixkGwxg",
+        tracklist: [
+          { n: 1, title: "Config.Sys", artist: "MNQN", dur: "01:28" },
+          { n: 2, title: "death bed (coffee for your head)", artist: "Powfu, beabadoobee", dur: "02:53" },
+          { n: 3, title: "Ricochet", artist: "STARSET", dur: "05:10" },
+          { n: 4, title: "Angel", artist: "Mystery Skulls", dur: "03:21" },
+          { n: 5, title: "FAULTLINE", artist: "STARSET", dur: "03:36" },
+          { n: 6, title: "True Friends", artist: "Bring Me The Horizon", dur: "03:52" },
+          { n: 7, title: "Monster", artist: "STARSET", dur: "04:16" },
+          { n: 8, title: "What Have You Become?", artist: "MNQN", dur: "04:21" },
+          { n: 9, title: "in the dark", artist: "Bring Me The Horizon", dur: "04:31" },
+          { n: 10, title: "Zombie", artist: "MNQN", dur: "05:43" },
+          { n: 11, title: "Throne", artist: "Bring Me The Horizon", dur: "03:11" },
+          { n: 12, title: "Death Of Me (Single Version)", artist: "Red", dur: "02:59" },
+          { n: 13, title: "why you gotta kick me when i'm down?", artist: "Bring Me The Horizon", dur: "04:28" },
+          { n: 14, title: "Heavy (feat. Kiiara)", artist: "Linkin Park, Kiiara", dur: "02:49" },
+          { n: 15, title: "Tomorrow", artist: "Downplay", dur: "03:11" }
+        ]
       },
       "Metamorphosis": {
         title: "Metamorphosis",
@@ -2828,13 +2835,13 @@ I know there's no remedy.`;
 
     const archiveContent = {
       "Literature": [
-        { title: "Metamorphosis", description: "Every poem, compiled in one place // By Shadow", type: "folder" }
+        { title: "Metamorphosis", description: "New beginnings to the repeating end.\n By Shadow", type: "folder" }
       ],
       "Fragments": [
         { title: "Project Melody Phase: Final", description: "Broken pieces coalesced with new pieces" },
-        { title: "Perspective", description: "Melodies that divulge a fable from my perspective // By Shadow" },
+        { title: "sad_songs", description: "Some songs that could resonate" },
         { title: "Remnant", description: "A piece of something whole" },
-        { title: "Decay", description: "Entropy in progress" }
+        { title: "system_failure", description: "system_failure.cause{critical_files_missing}.scanning MBR partition (0% complete)" }
       ]
     };
 
@@ -2967,7 +2974,7 @@ I know there's no remedy.`;
             </div>
           `;
         }
-        if (item.title === "Remnant" || item.title === "Decay") {
+        if (item.title === "Remnant") {
           return `
             <div class="archive-list-item locked" data-title="${item.title}" style="pointer-events: none;">
               <strong>${item.title}</strong>
@@ -2979,6 +2986,19 @@ I know there's no remedy.`;
                   <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none" />
                 </svg>
               </span>
+            </div>
+          `;
+        }
+        if (item.title === "sad_songs" || item.title === "system_failure") {
+          return `
+            <div class="archive-list-item playlist-card" tabindex="0" role="button" data-type="${item.type || ''}" data-title="${item.title}">
+              <div class="archive-card-header">
+                <svg class="playlist-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                </svg>
+                <strong>${item.title}</strong>
+              </div>
+              <span class="literature-description">${item.description}</span>
             </div>
           `;
         }
@@ -3047,9 +3067,12 @@ I know there's no remedy.`;
         } else if (type === "folder") {
           event.preventDefault();
           openAlbumWindow(title);
-        } else if (title === "Perspective") {
+        } else if (title === "sad_songs") {
         event.preventDefault();
-        openAlbumWindow("Perspective");
+        openAlbumWindow("sad_songs");
+      } else if (title === "system_failure") {
+        event.preventDefault();
+        openAlbumWindow("system_failure");
       } else if (title === "Project Melody Phase: Final") {
         event.preventDefault();
         openAlbumWindow("Project Melody Phase: Final");
@@ -3198,8 +3221,8 @@ I know there's no remedy.`;
       `).join("");
     }
 
-    function renderPerspectiveTracklist() {
-      albumTracklist.innerHTML = perspectiveTracks.map((track) => `
+    function renderSadsongsTracklist(tracks = sadsongsTracks) {
+      albumTracklist.innerHTML = tracks.map((track) => `
         <div class="album-track">
           <span class="album-track-num">${String(track.n).padStart(2, "0")}</span>
           <span class="album-track-info">
@@ -3270,7 +3293,7 @@ I know there's no remedy.`;
       if (cfg.poems) {
         renderPoemTracklist();
       } else if (cfg.tracklist) {
-        renderPerspectiveTracklist();
+        renderSadsongsTracklist(cfg.tracklist);
       } else {
         renderAlbumTracklist();
       }
