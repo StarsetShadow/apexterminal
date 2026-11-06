@@ -25,7 +25,7 @@
     /* Custom scrollbars — site aesthetic */
     * {
       scrollbar-width: thin;
-      scrollbar-color: #5a2226 #0b0a0a;
+      scrollbar-color: #e32636 #1a1111;
     }
 
     ::-webkit-scrollbar {
@@ -34,25 +34,25 @@
     }
 
     ::-webkit-scrollbar-track {
-      background: #0b0a0a;
+      background: #1a1111;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #5a2226;
+      background: #e32636;
       border: 2px solid #0b0a0a;
       border-radius: 6px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #8e303a;
+      background: #ff3347;
     }
 
     ::-webkit-scrollbar-thumb:active {
-      background: var(--red-bright);
+      background: #ff3347;
     }
 
     ::-webkit-scrollbar-corner {
-      background: #0b0a0a;
+      background: #1a1111;
     }
 
     html { scroll-behavior: smooth; }
@@ -337,8 +337,9 @@
       color: var(--red-bright);
       cursor: pointer;
       font: inherit;
-      font-size: 16px;
+      font-size: 22px;
       line-height: 1;
+      padding: 2px 6px;
     }
 
     .profile-terminal-output {
@@ -391,6 +392,7 @@
 
     .operator-dossier-profile {
       display: grid;
+      grid-template-rows: auto auto auto;
       align-content: center;
       justify-items: center;
       gap: 8px;
@@ -518,11 +520,6 @@
 
     .operator-photo-slider-wrap { display: grid; gap: 6px; justify-items: center; }
 
-    .operator-dossier-profile {
-      grid-template-rows: auto auto auto;
-      align-content: center;
-    }
-
     .operator-dossier-name { margin: 0; color: #eee6e3; font-size: 16px; letter-spacing: .12em; text-align: center; }
     .operator-dossier-handle {
       display: flex;
@@ -617,13 +614,14 @@
       color: var(--red-bright);
       cursor: pointer;
       font: inherit;
-      font-size: 16px;
+      font-size: 22px;
       line-height: 1;
+      padding: 2px 6px;
     }
 
     .archive-folders {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
       padding: 14px;
     }
@@ -1059,14 +1057,6 @@
       transform: translateY(-2px);
     }
 
-    /* Solivagant - unified red theme */
-    .solivagant-card:hover,
-    .solivagant-card:focus-visible {
-      border-color: #8e303a;
-      box-shadow: 0 0 14px rgba(227, 38, 54, .12);
-      transform: translateY(-2px);
-    }
-
     /* October - unified red theme */
     .october-card:hover,
     .october-card:focus-visible {
@@ -1140,8 +1130,9 @@
       color: var(--red-bright);
       cursor: pointer;
       font: inherit;
-      font-size: 16px;
+      font-size: 22px;
       line-height: 1;
+      padding: 2px 6px;
       flex: 0 0 auto;
     }
 
@@ -1282,8 +1273,9 @@
       color: var(--red-bright);
       cursor: pointer;
       font: inherit;
-      font-size: 16px;
+      font-size: 22px;
       line-height: 1;
+      padding: 2px 6px;
       flex: 0 0 auto;
     }
 
@@ -1333,9 +1325,10 @@
     /* Poem rows: let long descriptions wrap instead of truncating with an ellipsis */
     .poem-track .album-track-title,
     .poem-track .album-track-artist {
-      overflow: visible;
-      text-overflow: clip;
-      white-space: normal;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: normal !important;
+      text-align: left;
     }
 
     .album-cover {
@@ -1424,11 +1417,34 @@
       width: 100%;
       max-height: 56vh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
       padding-top: 10px;
       border-top: 1px solid #302222;
+    }
+
+    .album-tracklist::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .album-tracklist::-webkit-scrollbar-track {
+      background: #1a1111;
+    }
+
+    .album-tracklist::-webkit-scrollbar-thumb {
+      background: #e32636;
+      border: 2px solid #0b0a0a;
+      border-radius: 6px;
+    }
+
+    .album-tracklist::-webkit-scrollbar-thumb:hover {
+      background: #ff3347;
+    }
+
+    .album-tracklist::-webkit-scrollbar-thumb:active {
+      background: #ff3347;
     }
 
     .album-track {
@@ -2170,28 +2186,6 @@
       91% { transform: translateX(-2px); }
     }
 
-    @keyframes glitch-red {
-      0%, 88%, 92%, 100% { clip-path: inset(0 0 100%); transform: none; }
-      89% { clip-path: inset(12% 0 66%); transform: translateX(-3px); }
-      90% { clip-path: inset(54% 0 25%); transform: translateX(3px); }
-      91% { clip-path: inset(78% 0 8%); transform: translateX(-2px); }
-    }
-
-    @keyframes glitch-light {
-      0%, 89%, 93%, 100% { clip-path: inset(0 0 100%); transform: none; }
-      90% { clip-path: inset(37% 0 45%); transform: translateX(3px); }
-      91% { clip-path: inset(7% 0 79%); transform: translateX(-2px); }
-      92% { clip-path: inset(69% 0 18%); transform: translateX(2px); }
-    }
-
-    @keyframes image-tear {
-      0%, 82%, 87%, 100% { clip-path: inset(0 0 100%); opacity: 0; transform: none; }
-      83% { clip-path: inset(13% 0 72%); opacity: .8; transform: translateX(-7px); }
-      84% { clip-path: inset(49% 0 39%); opacity: .65; transform: translateX(6px); }
-      85% { clip-path: inset(78% 0 9%); opacity: .8; transform: translateX(-4px); }
-      86% { clip-path: inset(31% 0 56%); opacity: .5; transform: translateX(3px); }
-    }
-
     @keyframes signal-jitter {
       0%, 82%, 87%, 100% { transform: translateY(-50%); }
       83% { transform: translate(-3px, calc(-50% + 1px)); }
@@ -2306,6 +2300,7 @@
       }
       .album-window.is-metamorphosis .album-cover { width: 104px; }
       .album-window.is-metamorphosis .album-tracklist { max-height: min(320px, 56vh); }
+      .album-window.is-metamorphosis .album-track { overflow: visible; }
 
       /* sad_songs / system_failure: stack cover, info, play vertically on narrow screens */
       .album-window:not(.is-metamorphosis) .album-window-content {
@@ -2315,7 +2310,7 @@
           "info"
           "play"
           "list";
-        gap: 8px;
+      gap: 12px;
       }
       .album-window:not(.is-metamorphosis) .album-cover { width: 120px; }
       .album-window:not(.is-metamorphosis) .album-tracklist { max-height: min(240px, 50vh); }
@@ -2484,6 +2479,11 @@
             <strong>Fragments</strong>
             <span>Directory // 002</span>
           </button>
+          <button class="archive-folder" type="button">
+            <span class="archive-folder-icon" aria-hidden="true"></span>
+            <strong>Jukebox</strong>
+            <span>Directory // 003</span>
+          </button>
         </div>
       </section>
 
@@ -2573,6 +2573,7 @@
     let terminalBiographyTimer;
     let archiveCloseFallback;
     let archiveTransitionId = 0;
+    let archiveToggling = false;
     let archiveListCloseFallback;
     let archiveListTransitionId = 0;
     const warningMessage = "Unauthorized visit detected";
@@ -2637,8 +2638,8 @@
       { title: "October", description: "Birth of something, now death of everything. // By Shadow" },
       { title: "Blood", description: "For the clarity that only blood could give. // By Shadow" },
       { title: "The Room", description: "An earthquake behind the walls. // By Shadow" },
-      { locked: true },
-      { locked: true }
+      { title: "Winter", description: "The season that stole my warmth. // By Shadow" },
+      { title: "Metamorphosis", description: "A rebirth from the chrysalis. // By Shadow" }
     ];
 
     const albums = {
@@ -2831,6 +2832,58 @@ However my rain is not so kind,
 I'll stay in my cemetery,
 I know there's no remedy.`;
 
+    const winterPoem = `Winter, here we are once again,
+Last time i saw you i wasn't in pain,
+The snow felt warmer than sunlight.
+How you and i danced in the moonlight.
+
+Do you remember how it felt
+So warm that hearts would melt
+Now it's all just grey
+Ashes in the waves
+
+I required a fire so i burnt all bridges,
+I was once immune and immensely rigid.
+As the flames turned to embers,
+And the smoke became the sky.
+An unbearable cold lingered,
+And all i could scream is "why".
+
+So now i entreat you winter my dear,
+Remind me to never fall in the snow.
+Because i can't bear any further flames,
+Won't regress and fall to my fear.
+So many tragedies in a row;
+My winter, you don't feel the same.`;
+
+    const metamorphosisPoemContent = `Slumber under a swaying calm blossom tree,
+Tangled in branches yet they feel at home.
+Wake to belief the light will be warm with glee,
+Desolated by the rain in which you now roam.
+
+Harbour resentment, anguish and sorrow,
+Come to terms; what you had was borrowed,
+Let it all form a cocoon in which you'll reside,
+Paralyzed in place as you're struck by tides.
+
+Be patient and keep the parasites at bay
+Let the cocoon harden, it won't in a day
+Don't blame the tree for thorns you ran into
+You are to blame, should've seen in lieu.
+
+The cocoon is dampened by what you harboured,
+Learn to accept and let go, it dulls the armour.
+The day has arrived, hatch from the cocoon,
+Don't hasten a few parasites still loom.
+
+Here you are, sundered yet alive,
+Will you be naive and fault the light?
+Don't act surprised you were left to die,
+You're more naive to believe it'll hear your cry.
+
+Quakes in the land say you're the cause of this
+Revel, it cursed you with a metamorphosis.`;
+
     poemWindowContent.innerHTML = `<pre class="poem-text">${avenoirPoem}</pre>`;
 
     const archiveContent = {
@@ -2839,8 +2892,10 @@ I know there's no remedy.`;
       ],
       "Fragments": [
         { title: "Project Melody Phase: Final", description: "Broken pieces coalesced with new pieces" },
+        { title: "Remnant", description: "A piece of something whole" }
+      ],
+      "Jukebox": [
         { title: "sad_songs", description: "Some songs that could resonate" },
-        { title: "Remnant", description: "A piece of something whole" },
         { title: "system_failure", description: "system_failure.cause{critical_files_missing}.scanning MBR partition (0% complete)" }
       ]
     };
@@ -2875,11 +2930,14 @@ I know there's no remedy.`;
 
     archiveWindowOpen.addEventListener("click", event => {
       event.preventDefault();
-      if (!archiveWindow.hidden && !archiveWindow.classList.contains("is-closing")) {
-        closeArchiveWindow();
-      } else {
+      if (archiveToggling) return;
+      archiveToggling = true;
+      if (archiveWindow.hidden) {
         openArchiveWindow();
+      } else {
+        closeArchiveWindow();
       }
+      setTimeout(() => { archiveToggling = false; }, 400);
     });
 
     function openArchiveWindow() {
@@ -3109,6 +3167,8 @@ I know there's no remedy.`;
       if (event.button !== 0) return;
       const target = event.target instanceof Element ? event.target : null;
       if (!target) return;
+      if (target.closest("#menu-toggle")) return;
+      if (target.closest("#archive-window-open")) return;
 
       const openLayers = [
         { el: poemWindow, close: () => closePoemWindow(true) },
@@ -3142,7 +3202,9 @@ I know there's no remedy.`;
         "Love Song": loveSongPoem,
         "Solivagant": solivagantPoem,
         "October": octoberPoem,
-        "Blood": bloodPoem
+        "Blood": bloodPoem,
+        "Winter": winterPoem,
+        "Metamorphosis": metamorphosisPoemContent
       };
       poemWindowContent.innerHTML = `<pre class="poem-text">${poems[title] || poems["Avenoir"]}</pre>`;
 
