@@ -20,7 +20,7 @@
       --display: "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; user-select: none; }
 
     /* Custom scrollbars — site aesthetic */
     * {
@@ -1134,6 +1134,35 @@
       line-height: 1;
       padding: 2px 6px;
       flex: 0 0 auto;
+    }
+
+    .poem-window-copy {
+      border: 1px solid var(--red);
+      background: transparent;
+      color: var(--red-bright);
+      cursor: pointer;
+      font: inherit;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      margin-top: 10px;
+      transition: background .18s, border-color .18s, color .18s, box-shadow .18s;
+    }
+
+    .poem-window-copy:hover,
+    .poem-window-copy:focus-visible {
+      border-color: var(--red-bright);
+      color: #fff;
+      background: rgba(227, 38, 54, .1);
+      box-shadow: 0 0 14px rgba(227, 38, 54, .12);
+    }
+
+    .poem-window-copy.copied {
+      border-color: var(--red-bright);
+      background: var(--red-bright);
+      color: #fff;
+      box-shadow: 0 0 18px rgba(255, 51, 71, .4);
     }
 
     .poem-window-content {
@@ -2505,6 +2534,7 @@
         </div>
         <div class="poem-window-content" id="poem-window-content">
           <pre class="poem-text">Poem to be provided later...</pre>
+          <button class="poem-window-copy" id="poem-window-copy" type="button">Copy</button>
         </div>
       </section>
 
@@ -2538,6 +2568,11 @@
     </main>
 
   <script>
+    document.addEventListener("contextmenu", event => event.preventDefault());
+    document.addEventListener("keydown", event => { if ((event.ctrlKey || event.metaKey) && event.key === "c") { event.preventDefault(); } });
+    document.addEventListener("copy", event => event.preventDefault());
+    document.addEventListener("dragstart", event => event.preventDefault());
+
     const clock = document.getElementById("clock");
     const dateLabel = document.getElementById("date-label");
     const signalButton = document.getElementById("signal-toggle");
@@ -2584,6 +2619,7 @@
 
     const poemWindow = document.getElementById("poem-window");
     const poemWindowClose = document.getElementById("poem-window-close");
+    const poemWindowCopy = document.getElementById("poem-window-copy");
     const poemWindowTitle = document.getElementById("poem-window-title");
     const poemWindowContent = document.getElementById("poem-window-content");
     let poemCloseFallback;
@@ -2808,7 +2844,7 @@ With inevitability of time you would've learnt,
 This manor of terrors is what i created.`;
 
     const bloodPoem = `How long until you all realize?
-Hell is disguised as paradise
+Hell is disguised as paradise.
 I saw myself through a broken mirror;
 The blood made my reflection clearer.
 
@@ -3207,6 +3243,9 @@ Revel, it cursed you with a metamorphosis.`;
         "Metamorphosis": metamorphosisPoemContent
       };
       poemWindowContent.innerHTML = `<pre class="poem-text">${poems[title] || poems["Avenoir"]}</pre>`;
+      poemWindowContent.appendChild(poemWindowCopy);
+      poemWindowCopy.textContent = "Copy";
+      poemWindowCopy.classList.remove("copied");
 
       poemWindowClose.focus();
     }
@@ -3242,6 +3281,19 @@ Revel, it cursed you with a metamorphosis.`;
     });
 
     poemWindowClose.addEventListener("click", () => closePoemWindow(true));
+
+    poemWindowCopy.addEventListener("click", () => {
+      const title = poemWindowTitle.textContent || "Avenoir";
+      const text = poemWindowContent.querySelector(".poem-text")?.textContent || "";
+      poemWindowCopy.textContent = "Content successfully copied.";
+      poemWindowCopy.classList.add("copied");
+      navigator.clipboard.writeText(text + "\n\n— " + title + " By Shadow").then(() => {
+        setTimeout(() => {
+          poemWindowCopy.textContent = "Copy";
+          poemWindowCopy.classList.remove("copied");
+        }, 1500);
+      });
+    });
 
     function activatePoemTrack(track) {
       track.classList.remove("is-clicked");
@@ -3449,26 +3501,29 @@ Revel, it cursed you with a metamorphosis.`;
           operatorDossier.hidden = false;
         }
       };
-      const typeCommand = () => {
-        let position = 0;
-        terminalTypingTimer = window.setInterval(() => {
-          position += 1;
-          profileCommandText.textContent = command.slice(0, position);
-          profileTerminalOutput.scrollTop = profileTerminalOutput.scrollHeight;
-          if (position >= command.length) {
-            window.clearInterval(terminalTypingTimer);
-            terminalBiographyTimer = window.setTimeout(revealProfile, 350);
-          }
-        }, 65);
-      };
+    const typeCommand = () => {
+      let position = 0;
+      terminalTypingTimer = window.setInterval(() => {
+        position += 1;
+        profileCommandText.textContent = command.slice(0, position);
+        profileTerminalOutput.scrollTop = profileTerminalOutput.scrollHeight;
+        if (position >= command.length) {
+          window.clearInterval(terminalTypingTimer);
+          terminalBiographyTimer = window.setTimeout(revealProfile, 350);
+        }
+      }, 65);
+    };
 
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         profileCommandText.textContent = command;
         revealProfile();
       } else {
         typeCommand();
       }
     });
+
+    const verifiedKey = "apex_verified";
+    const alreadyVerified = localStorage.getItem(verifiedKey) === "1";
 
     profileTerminal.addEventListener("animationend", event => {
       if (event.target === profileTerminal && event.animationName === "terminal-open") {
@@ -3493,6 +3548,27 @@ Revel, it cursed you with a metamorphosis.`;
       terminalMessage.textContent = warningMessage;
       document.getElementById("hero-title").setAttribute("aria-label", warningMessage);
       document.body.classList.add("access-granted");
+    } else if (alreadyVerified) {
+      hero.classList.add("is-typing");
+      greetingPhrase.textContent = "Welcome,";
+      greetingPhrase.dataset.text = "Welcome,";
+      operatorName.textContent = "Visitor";
+      operatorName.dataset.text = "Visitor";
+      document.getElementById("hero-title").setAttribute("aria-label", warningMessage);
+      let position = 0;
+      const typingTimer = window.setInterval(() => {
+        position += 1;
+        terminalMessage.textContent = warningMessage.slice(0, position);
+        if (position >= warningMessage.length) {
+          window.clearInterval(typingTimer);
+          hero.classList.remove("is-typing");
+          hero.classList.add("is-complete");
+          accessLevelValue.textContent = "01";
+          accessLevelValue.setAttribute("aria-label", "01");
+          accessLevelValue.classList.remove("is-corrupted");
+          document.body.classList.add("access-granted");
+        }
+      }, 55);
     } else {
       const accessLabel = document.querySelector(".access-label");
       const loadingMessage = accessLabel.dataset.text;
@@ -3549,6 +3625,7 @@ Revel, it cursed you with a metamorphosis.`;
             accessLevelValue.setAttribute("aria-label", "01");
             accessLevelValue.classList.remove("is-corrupted");
             document.body.classList.add("access-granted");
+            localStorage.setItem(verifiedKey, "1");
           }
         }, 55);
       }, loadingDuration);
@@ -3576,22 +3653,6 @@ Revel, it cursed you with a metamorphosis.`;
         menuToggle.setAttribute("aria-expanded", "false");
         menuToggle.setAttribute("aria-label", "Open navigation");
       }
-    });
-
-    document.addEventListener("dblclick", () => {
-      if (document.body.classList.contains("access-granted")) return;
-      loadingTimers.forEach((timer) => {
-        window.clearTimeout(timer);
-        window.clearInterval(timer);
-      });
-      loadingTimers.length = 0;
-      hero.classList.remove("is-loading", "is-typing", "is-glitching", "has-loading-dots", "is-blinking-dots");
-      terminalMessage.textContent = warningMessage;
-      accessLevelValue.textContent = "01";
-      accessLevelValue.setAttribute("aria-label", "01");
-      accessLevelValue.classList.remove("is-corrupted");
-      document.body.classList.add("access-granted");
-      document.getElementById("hero-title").setAttribute("aria-label", warningMessage);
     });
   </script>
 </body>
